@@ -1,0 +1,144 @@
+/** @import must precede all other statements */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /**
+   * Tailwind CSS theme
+   * tailwind.config.ts expects the following color variables to be expressed as HSL values.
+   * A different format will require also updating the theme in tailwind.config.ts.
+  */
+  :root {
+    --background: 15 20% 12%;
+    --foreground: 0 0% 98%;
+
+    --card: 15 18% 18%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 15 20% 12%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 45 86% 48%;
+    --primary-foreground: 15 20% 12%;
+
+    --secondary: 200 80% 50%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 217 32% 20%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 180 95% 45%;
+    --accent-foreground: 15 20% 12%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 32% 25%;
+    --input: 217 32% 25%;
+    --ring: 45 86% 48%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 15 18% 18%;
+
+    --sidebar-foreground: 0 0% 98%;
+
+    --sidebar-primary: 45 86% 48%;
+
+    --sidebar-primary-foreground: 15 20% 12%;
+
+    --sidebar-accent: 200 80% 50%;
+
+    --sidebar-accent-foreground: 0 0% 98%;
+
+    --sidebar-border: 217 32% 25%;
+
+    --sidebar-ring: 45 86% 48%;
+
+    /* Game Colors */
+    --game-start: 120 75% 45%;
+    --game-goal: 0 85% 50%;
+    --game-treasure: 45 92% 52%;
+    --game-wall: 0 0% 15%;
+    --game-empty: 0 0% 95%;
+    --game-explore: 210 95% 35%;
+    --game-frontier: 210 95% 65%;
+    --game-path: 120 75% 45%;
+    --game-route: 35 85% 45%;
+    --game-final: 180 95% 45%;
+  }
+
+  .dark {
+    --background: 15 20% 12%;
+    --foreground: 0 0% 98%;
+
+    --card: 15 18% 18%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 15 20% 12%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 45 86% 48%;
+    --primary-foreground: 15 20% 12%;
+
+    --secondary: 200 80% 50%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 217 32% 20%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 180 95% 45%;
+    --accent-foreground: 15 20% 12%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 32% 25%;
+    --input: 217 32% 25%;
+    --ring: 45 86% 48%;
+    --sidebar-background: 15 18% 18%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 45 86% 48%;
+    --sidebar-primary-foreground: 15 20% 12%;
+    --sidebar-accent: 200 80% 50%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 217 32% 25%;
+    --sidebar-ring: 45 86% 48%;
+
+    /* Game Colors (same as light for consistency) */
+    --game-start: 120 75% 45%;
+    --game-goal: 0 85% 50%;
+    --game-treasure: 45 92% 52%;
+    --game-wall: 0 0% 15%;
+    --game-empty: 0 0% 95%;
+    --game-explore: 210 95% 35%;
+    --game-frontier: 210 95% 65%;
+    --game-path: 120 75% 45%;
+    --game-route: 35 85% 45%;
+    --game-final: 180 95% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  :where(p, span, li, h1, h2, h3, h4, h5, h6, a, button, label, td, th) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  pre,
+  code {
+    overflow-x: auto;
+    white-space: pre;
+  }
+}
