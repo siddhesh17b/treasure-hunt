@@ -53,10 +53,19 @@ export default function Simulation() {
         setPhase(Phase.PREPROCESSING);
 
         const simulationGrid = grid.copy();
+        
+        console.log("Starting simulation with grid:", {
+          rows: simulationGrid.rows,
+          cols: simulationGrid.cols,
+          start: simulationGrid.start,
+          goal: simulationGrid.goal,
+          treasures: simulationGrid.treasures.length
+        });
 
         const result = await TreasureHuntSolver.solve(
           simulationGrid,
           (phase: string) => {
+            console.log("Phase update:", phase);
             setPhaseMessage(phase);
           },
           (pos: Position) => {
@@ -67,15 +76,29 @@ export default function Simulation() {
           },
           (order: Position[], distance: number, isBest: boolean) => {
             // On test route
+            console.log("Testing route:", { distance, isBest });
           }
         );
 
-        setResult(result);
+        console.log("Simulation result:", {
+          pathLength: result.completePath.length,
+          totalDistance: result.totalDistance,
+          treasuresCount: grid.treasures.length
+        });
+
+        // Add treasures from grid to result
+        const fullResult: SimulationResult = {
+          ...result,
+          treasures: grid.treasures,
+        };
+
+        setResult(fullResult);
         setIsLoading(false);
         setPhase(Phase.EXECUTING);
       } catch (error) {
+        console.error("Simulation error:", error);
         toast.error(`Error: ${error instanceof Error ? error.message : "Unknown error"}`);
-        navigate("/editor");
+        setTimeout(() => navigate("/editor"), 2000);
       }
     };
 

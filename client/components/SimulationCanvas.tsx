@@ -26,13 +26,20 @@ export default function SimulationCanvas({
     const updateCellSize = () => {
       if (!containerRef.current) return;
       const width = containerRef.current.clientWidth;
+      if (width === 0) return; // Wait until container has width
       const availableSize = Math.floor((width - 20) / grid.cols);
       setCellSize(Math.min(availableSize, 60));
     };
 
+    // Use setTimeout to ensure container is mounted
+    const timer = setTimeout(updateCellSize, 100);
     updateCellSize();
+    
     window.addEventListener("resize", updateCellSize);
-    return () => window.removeEventListener("resize", updateCellSize);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", updateCellSize);
+    };
   }, [grid.cols]);
 
   useEffect(() => {
@@ -177,7 +184,7 @@ export default function SimulationCanvas({
   }, [grid, explorerPosition, completePath, cellSize, phase, treasuresCollected]);
 
   return (
-    <div ref={containerRef} className="w-full flex justify-center">
+    <div ref={containerRef} className="w-full flex justify-center min-h-[400px]">
       <canvas
         ref={canvasRef}
         className="rounded-lg border-2 border-slate-400"
