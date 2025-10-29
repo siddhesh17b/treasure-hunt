@@ -13,7 +13,7 @@ An interactive educational tool that visualizes pathfinding algorithms (Greedy B
 
 ## 🚀 Live Demo
 
-**Access the app**: [Your Netlify URL will be here after deployment]
+**Access the app**: [https://treasure-hunt-daa-solver.netlify.app](https://treasure-hunt-daa-solver.netlify.app)
 
 Works on:
 - 💻 Desktop (Windows, Mac, Linux)

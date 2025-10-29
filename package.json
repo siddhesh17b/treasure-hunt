@@ -1,5 +1,8 @@
 {
-  "name": "fusion-starter",
+  "name": "treasure-hunt-daa-solver",
+  "version": "1.0.0",
+  "description": "Interactive visualization tool for pathfinding algorithms solving the Traveling Salesman Problem variant",
+  "homepage": "https://treasure-hunt-daa-solver.netlify.app",
   "private": true,
   "type": "module",
   "pkg": {
