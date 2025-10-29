@@ -1,9 +1,10 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { SimulationResult, Grid } from "@shared/types";
+import { SimulationResult, Grid, Position } from "@shared/types";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Home, RotateCcw } from "lucide-react";
 import ResultsCanvas from "../components/ResultsCanvas";
 import { Toaster } from "@/components/ui/sonner";
+import { useState } from "react";
 
 interface LocationState {
   result?: SimulationResult;
@@ -127,6 +128,7 @@ export default function Results() {
             <div className="lg:col-span-2">
               <div className="bg-white/80 backdrop-blur-xl border border-purple-200 rounded-2xl shadow-xl p-8">
                 <h2 className="text-xl font-bold text-slate-800 mb-6">Optimal Path Visualization</h2>
+                
                 <ResultsCanvas result={result} grid={grid} />
               </div>
             </div>

@@ -87,10 +87,6 @@ export default function Simulation() {
           (pos: Position) => {
             // On explore - visualize exploration in real-time
             setExploredNodes(prev => [...prev, pos]);
-          },
-          (order: Position[], distance: number, isBest: boolean) => {
-            // On test route
-            console.log("Testing route:", { distance, isBest });
           }
         );
 

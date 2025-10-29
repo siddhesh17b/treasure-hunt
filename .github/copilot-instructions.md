@@ -119,6 +119,7 @@ const grid = Grid.deserialize(gridData);
 - Responsive cell sizing: `cellSize = Math.min((containerWidth - 20) / grid.cols, 60)`
 - Color coding via actual grid cell types (no random generation)
 - Emoji icons for cell types: 🚩 (START), 🎯 (GOAL), 💎 (TREASURE)
+- **Brick wall textures**: Canvas-based patterns for SimulationCanvas/ResultsCanvas, CSS gradients for GridCanvas
 - **Exploration Animation**: Wave/ripple effect for preprocessing phase
   - Blue gradient fades in as nodes are explored (opacity 0.1 → 0.4)
   - Cyan wave effect on last 30 explored nodes with pulsing opacity
@@ -144,10 +145,9 @@ Uses `useEffect` with speed-controlled intervals:
 // Base delay: 500ms, minimum 100ms per step
 const delayPerStep = Math.max(100, 500 / speed)
 
-// Step controls allow manual navigation
-handleStepForward() // Move one step forward
-handleStepBackward() // Move one step backward  
-handleSkipToEnd() // Jump to completion
+// Simplified playback controls (3 buttons)
+// Play/Pause, Reset, Skip to End
+// Note: Step forward/backward controls removed for cleaner UX
 
 // Auto-navigates to Results page after completion (1.5s delay)
 ```
@@ -157,7 +157,7 @@ handleSkipToEnd() // Jump to completion
 - **Grid data passed via location.state** to preserve original map design
 - ResultsCanvas renders actual grid (not randomly generated walls)
 - Shows comprehensive metrics: distance, treasures, nodes explored, routes tested
-- Displays optimal path visualization with gradient cyan line
+- Displays optimal path visualization with gradient purple→pink line
 - Includes journey summary with treasure collection order
 
 ## Development Workflow
@@ -237,8 +237,11 @@ app.get("/api/my-endpoint", handleMyRoute)
   ```
 
 ### Theme System
-- Dark gradient backgrounds: `bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950`
-- Accent colors: Cyan borders (`border-cyan-500/20`), yellow treasures, green start, red goal
+- **Light theme** with purple/pink gradient palette
+- Primary colors: Purple-600 (#9333ea), Pink-600 (#db2777)
+- Backgrounds: Very light (HSL: 210 40% 98%) with white cards and backdrop-blur
+- Accent colors: Purple borders, yellow treasures, green start, red goal
+- Wall textures: Brick pattern with darker slate (#64748b) and mortar lines
 - Configure design tokens in `client/global.css` and `tailwind.config.ts`
 
 ### Toast Notifications
