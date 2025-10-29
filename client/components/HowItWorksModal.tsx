@@ -12,7 +12,7 @@ export default function HowItWorksModal({ open, onOpenChange }: HowItWorksModalP
       number: 1,
       title: "🔍 Phase 1: Preprocessing",
       description:
-        "The A* algorithm explores your maze to find the shortest paths between all important points (start, treasures, and goal). Watch for the exploration animation!",
+        "The Greedy Best-First Search algorithm explores your maze to find the shortest paths between all important points (start, treasures, and goal). Watch for the exploration animation!",
       color: "from-blue-400 to-blue-600",
       emoji: "🔍",
     },
@@ -50,7 +50,7 @@ export default function HowItWorksModal({ open, onOpenChange }: HowItWorksModalP
             🎯 Treasure Hunt: Algorithm Visualization
           </DialogTitle>
           <p className="text-gray-400 text-sm">
-            This project demonstrates how A* pathfinding and Backtracking algorithms work together to solve an optimization problem.
+            This project demonstrates how Greedy Best-First Search and Backtracking algorithms work together to solve an optimization problem.
           </p>
         </DialogHeader>
 

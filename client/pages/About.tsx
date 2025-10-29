@@ -77,11 +77,11 @@ export default function About() {
               <div>
                 <h3 className="text-lg font-semibold text-white mb-2">🔍 Phase 1: Preprocessing</h3>
                 <p className="text-gray-300 text-sm leading-relaxed mb-2">
-                  The computer uses the <strong className="text-blue-400">A* (A-Star) Algorithm</strong> to explore your map.
+                  The computer uses the <strong className="text-blue-400">Greedy Best-First Search Algorithm</strong> to explore your map.
                 </p>
                 <div className="bg-blue-900/20 border border-blue-500/30 rounded p-3 mt-2">
                   <p className="text-blue-200 text-sm">
-                    <strong>What's A*?</strong> It's a smart searching algorithm that finds the shortest path between two points. 
+                    <strong>What's Greedy Best-First Search?</strong> It's a smart searching algorithm that finds the shortest path between two points. 
                     Think of it like using GPS - it doesn't explore every single street, it intelligently focuses on promising routes.
                   </p>
                   <p className="text-blue-200 text-sm mt-2">
@@ -160,7 +160,7 @@ export default function About() {
             <div className="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4">
               <h3 className="text-purple-300 font-semibold mb-2">📚 Learn Algorithms</h3>
               <p className="text-gray-300 text-sm">
-                See how A* and Backtracking work visually instead of just reading about them in textbooks.
+                See how Greedy Best-First Search and Backtracking work visually instead of just reading about them in textbooks.
               </p>
             </div>
             <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
@@ -192,7 +192,7 @@ export default function About() {
           </div>
           <div className="space-y-3">
             <div>
-              <h3 className="text-cyan-300 font-semibold mb-1">A* Pathfinding Algorithm</h3>
+              <h3 className="text-cyan-300 font-semibold mb-1">Greedy Best-First Search Algorithm</h3>
               <p className="text-gray-300 text-sm">
                 Uses a heuristic (Manhattan Distance) to efficiently find shortest paths. Time complexity: O(b^d) where b is branching factor and d is depth.
               </p>

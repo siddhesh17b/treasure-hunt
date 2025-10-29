@@ -49,7 +49,7 @@ export default function Home() {
         {/* Description */}
         <p className="text-gray-400 mb-12 max-w-lg mx-auto leading-relaxed">
           Design custom mazes and watch intelligent algorithms navigate them in real-time.
-          Learn A* pathfinding and backtracking through beautiful animations.
+          Learn Greedy Best-First Search and backtracking through beautiful animations.
         </p>
 
         {/* Action Buttons */}
@@ -79,7 +79,7 @@ export default function Home() {
           <p className="text-gray-300 text-sm mb-4 font-semibold">ALGORITHMS USED</p>
           <div className="flex flex-wrap gap-3 justify-center">
             <div className="bg-blue-500/20 border border-blue-400/50 px-4 py-2 rounded-full text-blue-300 text-sm font-medium">
-              ⭐ A* Search
+              ⭐ Greedy Best-First Search
             </div>
             <div className="bg-orange-500/20 border border-orange-400/50 px-4 py-2 rounded-full text-orange-300 text-sm font-medium">
               🔄 Backtracking

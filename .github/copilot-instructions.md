@@ -1,10 +1,10 @@
 # Treasure Hunt Algorithm Visualizer - AI Agent Instructions
 
 ## Project Overview
-An interactive educational tool visualizing pathfinding algorithms (A* + Backtracking) to solve the Traveling Salesman Problem variant: finding the optimal route from a start point through multiple treasures to a goal on a grid-based map.
+An interactive educational tool visualizing pathfinding algorithms (Greedy Best-First Search + Backtracking) to solve the Traveling Salesman Problem variant: finding the optimal route from a start point through multiple treasures to a goal on a grid-based map.
 
 **Core Tech**: React 18 + TypeScript + Express + Vite (Fusion Starter template)
-**Algorithm**: A* pathfinding + Backtracking optimization for treasure collection order
+**Algorithm**: Greedy Best-First Search pathfinding + Backtracking optimization for treasure collection order
 
 ## Architecture & Data Flow
 
@@ -29,12 +29,13 @@ Navigation uses `react-router-dom` with state passing via `location.state` for g
   - "What Is This?" - High-level overview with real-world examples
   - "How Does It Work?" - Step-by-step breakdown of all 4 phases
   - "Why Is This Important?" - Learning benefits and real-world applications
-  - "Technical Details" - Algorithm complexity and implementation notes
+  - "Technical Details" - Algorithm complexity and implementation notes (Greedy Best-First Search)
   - "Quick Start Guide" - 5-step getting started tutorial
 - **Welcome Banner**: Appears on Editor page with quick-start instructions (dismissible with ✕ button)
 - **Learn More Buttons**: Available on Home and Simulation pages linking to About page
 - **Phase Indicators**: Visual progress through algorithm phases with emoji icons (🔍⚙️▶️✨)
 - **Metrics Panel**: Real-time stats showing current phase, steps, distance, treasures collected
+- **Exploration Visualization**: Blue-tinted cells show nodes explored during preprocessing phase
 
 ## Core Domain Models (shared/types.ts)
 
@@ -67,10 +68,11 @@ class Position {
 ### TreasureHuntSolver.solve()
 **Three-phase algorithm**:
 
-1. **PREPROCESSING**: A* computes all-pairs shortest paths between {start, treasures, goal}
+1. **PREPROCESSING**: Greedy Best-First Search computes all-pairs shortest paths between {start, treasures, goal}
    - Stores distances in nested Maps: `Map<string, Map<string, number>>`
    - Uses Position.hash() as keys
    - Validates all treasures are reachable
+   - Visualizes explored nodes with blue tint during pathfinding
 
 2. **OPTIMIZING**: Backtracking finds optimal treasure collection order
    - Explores all permutations of treasure visit sequences
@@ -78,7 +80,8 @@ class Position {
    - Callback `onTestRoute(order, distance, isBest)` for live visualization
 
 3. **EXECUTING**: Constructs complete path from ordered route segments
-   - Concatenates A* paths: start → treasure1 → ... → treasureN → goal
+   - Concatenates paths: start → treasure1 → ... → treasureN → goal
+   - Cyan path visualization with explorer animation
 
 **Async pattern**: Uses `await new Promise(resolve => setTimeout(resolve, 50))` for animation delays
 
@@ -114,12 +117,23 @@ const handleCellClick = useCallback((row, col) => {
 ### Simulation Animation Loop
 Uses `useEffect` with speed-controlled intervals:
 ```typescript
-for (let i = 0; i < path.length; i++) {
-  if (isPaused) { await new Promise(r => setTimeout(r, 100)); i--; continue; }
-  setExplorerPos(path[i])
-  await new Promise(r => setTimeout(r, Math.max(20, 100 / speed)))
-}
+// Slower default speed (1x instead of 2x)
+// Base delay: 500ms, minimum 100ms per step
+const delayPerStep = Math.max(100, 500 / speed)
+
+// Step controls allow manual navigation
+handleStepForward() // Move one step forward
+handleStepBackward() // Move one step backward  
+handleSkipToEnd() // Jump to completion
+
+// Auto-navigates to Results page after completion (1.5s delay)
 ```
+
+### Results Page Flow
+- Simulation automatically navigates to `/results` when path execution completes
+- Shows comprehensive metrics: distance, treasures, nodes explored, routes tested
+- Displays optimal path visualization
+- Includes journey summary with treasure collection order
 
 ## Development Workflow
 

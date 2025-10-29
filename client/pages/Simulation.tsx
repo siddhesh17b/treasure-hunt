@@ -9,11 +9,15 @@ import { ArrowLeft, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
+interface LocationState {
+  gridData?: any;
+}
+
 export default function Simulation() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const gridData = (location.state as any)?.gridData;
+  const gridData = (location.state as LocationState)?.gridData;
 
   if (!gridData) {
     navigate("/editor");
@@ -40,11 +44,13 @@ export default function Simulation() {
   const [isLoading, setIsLoading] = useState(true);
   const [result, setResult] = useState<SimulationResult | null>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [speed, setSpeed] = useState(2);
+  const [speed, setSpeed] = useState(1); // Changed default from 2 to 1 (slower)
   const [phaseMessage, setPhaseMessage] = useState("Initializing...");
   const [explorerPos, setExplorerPos] = useState(initialGrid.start || new Position(0, 0));
   const [treasuresCollected, setTreasuresCollected] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [exploredNodes, setExploredNodes] = useState<Position[]>([]); // For visualization
 
   useEffect(() => {
     const runSimulation = async () => {
@@ -69,10 +75,8 @@ export default function Simulation() {
             setPhaseMessage(phase);
           },
           (pos: Position) => {
-            // On explore - update grid cell state
-            const updatedGrid = grid.copy();
-            updatedGrid.resetStates();
-            setGrid(updatedGrid);
+            // On explore - visualize exploration
+            setExploredNodes(prev => [...prev, pos]);
           },
           (order: Position[], distance: number, isBest: boolean) => {
             // On test route
@@ -106,12 +110,13 @@ export default function Simulation() {
   }, []);
 
   useEffect(() => {
-    if (!result || isLoading) return;
+    if (!result || isLoading || isAnimating) return;
 
     // Animate explorer along the path
     const animateExplorer = async () => {
+      setIsAnimating(true);
       const path = result.completePath;
-      const delayPerStep = Math.max(20, 100 / speed); // Speed affects animation
+      const delayPerStep = Math.max(100, 500 / speed); // Slower: min 100ms, base 500ms
 
       for (let i = 0; i < path.length; i++) {
         if (isPaused) {
@@ -129,20 +134,23 @@ export default function Simulation() {
         if (treasure && !result.treasures.slice(0, treasuresCollected).find((t) => t.equals(treasure))) {
           setTreasuresCollected((prev) => prev + 1);
           // Wait longer at treasure
-          await new Promise((resolve) => setTimeout(resolve, 300));
+          await new Promise((resolve) => setTimeout(resolve, 800));
         }
 
         await new Promise((resolve) => setTimeout(resolve, delayPerStep));
       }
 
-      // Animation complete
+      // Animation complete - auto navigate to results after 1.5 seconds
       setPhase(Phase.COMPLETE);
+      setIsAnimating(false);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      navigate("/results", { state: { result } });
     };
 
-    if (phase === Phase.EXECUTING && !isLoading) {
+    if (phase === Phase.EXECUTING && !isLoading && !isAnimating) {
       animateExplorer();
     }
-  }, [result, phase, speed, isPaused, isLoading, treasuresCollected]);
+  }, [result, phase, speed, isPaused, isLoading, treasuresCollected, isAnimating, navigate]);
 
   useEffect(() => {
     const startTime = Date.now();
@@ -152,6 +160,59 @@ export default function Simulation() {
 
     return () => clearInterval(timer);
   }, []);
+
+  // Step control handlers
+  const handleStepBackward = () => {
+    if (!result || currentStepIndex <= 0) return;
+    const newIndex = currentStepIndex - 1;
+    setCurrentStepIndex(newIndex);
+    setExplorerPos(result.completePath[newIndex]);
+    
+    // Recalculate treasure count based on treasures encountered up to this point
+    const treasuresEncountered = new Set<string>();
+    for (let i = 0; i <= newIndex; i++) {
+      const pos = result.completePath[i];
+      const treasure = result.treasures.find(t => t.equals(pos));
+      if (treasure) {
+        treasuresEncountered.add(treasure.hash());
+      }
+    }
+    setTreasuresCollected(treasuresEncountered.size);
+  };
+
+  const handleStepForward = () => {
+    if (!result || currentStepIndex >= result.completePath.length - 1) return;
+    const newIndex = currentStepIndex + 1;
+    setCurrentStepIndex(newIndex);
+    setExplorerPos(result.completePath[newIndex]);
+    
+    // Recalculate treasure count based on treasures encountered up to this point
+    const treasuresEncountered = new Set<string>();
+    for (let i = 0; i <= newIndex; i++) {
+      const pos = result.completePath[i];
+      const treasure = result.treasures.find(t => t.equals(pos));
+      if (treasure) {
+        treasuresEncountered.add(treasure.hash());
+      }
+    }
+    setTreasuresCollected(treasuresEncountered.size);
+  };
+
+  const handleSkipToEnd = () => {
+    if (!result) return;
+    setIsPaused(true);
+    setIsAnimating(false);
+    const lastIndex = result.completePath.length - 1;
+    setCurrentStepIndex(lastIndex);
+    setExplorerPos(result.completePath[lastIndex]);
+    setTreasuresCollected(result.treasures.length);
+    setPhase(Phase.COMPLETE);
+    
+    // Navigate to results after a short delay
+    setTimeout(() => {
+      navigate("/results", { state: { result } });
+    }, 1000);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 p-4 md:p-8">
@@ -209,6 +270,7 @@ export default function Simulation() {
               treasures={result?.treasures || []}
               treasuresCollected={treasuresCollected}
               phase={phase}
+              exploredNodes={exploredNodes}
             />
           )}
         </div>
@@ -228,6 +290,9 @@ export default function Simulation() {
             onSpeedChange={setSpeed}
             phase={phase}
             canAutoComplete={phase === Phase.COMPLETE}
+            onStepBackward={handleStepBackward}
+            onStepForward={handleStepForward}
+            onSkipToEnd={handleSkipToEnd}
           />
         )}
       </div>

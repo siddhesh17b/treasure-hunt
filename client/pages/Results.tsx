@@ -4,11 +4,15 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Home, RotateCcw } from "lucide-react";
 import ResultsCanvas from "../components/ResultsCanvas";
 
+interface LocationState {
+  result?: SimulationResult;
+}
+
 export default function Results() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const result = (location.state as any)?.result as SimulationResult;
+  const result = (location.state as LocationState)?.result;
 
   if (!result) {
     navigate("/");
@@ -165,7 +169,7 @@ export default function Results() {
                 <h3 className="text-sm font-bold text-white mb-3 uppercase">Algorithms Used</h3>
                 <div className="space-y-3 text-sm">
                   <div className="bg-blue-500/20 border border-blue-500/50 rounded px-3 py-2">
-                    <p className="text-blue-300 font-semibold">⭐ A* Pathfinding</p>
+                    <p className="text-blue-300 font-semibold">⭐ Greedy Best-First Search</p>
                     <p className="text-blue-200/70 text-xs mt-1">
                       Found shortest paths between all key points
                     </p>

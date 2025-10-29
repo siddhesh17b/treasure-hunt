@@ -8,6 +8,7 @@ interface SimulationCanvasProps {
   treasures: Position[];
   treasuresCollected: number;
   phase: Phase;
+  exploredNodes: Position[];
 }
 
 export default function SimulationCanvas({
@@ -17,6 +18,7 @@ export default function SimulationCanvas({
   treasures,
   treasuresCollected,
   phase,
+  exploredNodes,
 }: SimulationCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [cellSize, setCellSize] = useState(40);
@@ -98,6 +100,15 @@ export default function SimulationCanvas({
         ctx.strokeStyle = "#e5e7eb";
         ctx.lineWidth = 1;
         ctx.strokeRect(x, y, cellSize, cellSize);
+
+        // Show explored nodes during preprocessing phase
+        if (phase === Phase.PREPROCESSING && exploredNodes.length > 0) {
+          const isExplored = exploredNodes.find(n => n.equals(pos));
+          if (isExplored && cell.type === CellType.EMPTY) {
+            ctx.fillStyle = "rgba(59, 130, 246, 0.3)"; // Blue tint
+            ctx.fillRect(x, y, cellSize, cellSize);
+          }
+        }
 
         // Draw path if in executing phase
         if (phase === Phase.EXECUTING && completePath.length > 0) {
@@ -181,7 +192,7 @@ export default function SimulationCanvas({
       ctx.lineWidth = 2;
       ctx.stroke();
     }
-  }, [grid, explorerPosition, completePath, cellSize, phase, treasuresCollected]);
+  }, [grid, explorerPosition, completePath, cellSize, phase, treasuresCollected, exploredNodes]);
 
   return (
     <div ref={containerRef} className="w-full flex justify-center min-h-[400px]">

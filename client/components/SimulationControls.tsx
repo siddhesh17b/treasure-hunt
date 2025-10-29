@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Phase } from "@shared/types";
-import { Play, Pause, RotateCcw, SkipForward } from "lucide-react";
+import { Play, Pause, RotateCcw, SkipForward, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 
 interface SimulationControlsProps {
   isPaused: boolean;
@@ -12,6 +12,9 @@ interface SimulationControlsProps {
   onSpeedChange: (speed: number) => void;
   phase: Phase;
   canAutoComplete: boolean;
+  onStepBackward?: () => void;
+  onStepForward?: () => void;
+  onSkipToEnd?: () => void;
 }
 
 export default function SimulationControls({
@@ -23,6 +26,9 @@ export default function SimulationControls({
   onSpeedChange,
   phase,
   canAutoComplete,
+  onStepBackward,
+  onStepForward,
+  onSkipToEnd,
 }: SimulationControlsProps) {
   return (
     <div className="mt-8 bg-slate-900/50 border border-cyan-500/20 rounded-lg p-6 backdrop-blur-sm">
@@ -49,7 +55,17 @@ export default function SimulationControls({
         </div>
 
         {/* Playback Controls */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-5 gap-2">
+          <Button
+            onClick={onStepBackward}
+            disabled={!isPaused || phase !== Phase.EXECUTING}
+            variant="outline"
+            className="border-cyan-400/50 text-cyan-300 hover:bg-cyan-500/20 py-6 font-semibold flex items-center justify-center disabled:opacity-30"
+            title="Step Backward"
+          >
+            <ChevronLeft size={20} />
+          </Button>
+
           <Button
             onClick={onPauseToggle}
             className={`py-6 font-semibold flex items-center justify-center gap-2 ${
@@ -61,7 +77,7 @@ export default function SimulationControls({
             {isPaused ? (
               <>
                 <Play size={20} />
-                <span className="hidden sm:inline">Resume</span>
+                <span className="hidden sm:inline">Play</span>
               </>
             ) : (
               <>
@@ -69,6 +85,16 @@ export default function SimulationControls({
                 <span className="hidden sm:inline">Pause</span>
               </>
             )}
+          </Button>
+
+          <Button
+            onClick={onStepForward}
+            disabled={!isPaused || phase !== Phase.EXECUTING}
+            variant="outline"
+            className="border-cyan-400/50 text-cyan-300 hover:bg-cyan-500/20 py-6 font-semibold flex items-center justify-center disabled:opacity-30"
+            title="Step Forward"
+          >
+            <ChevronRight size={20} />
           </Button>
 
           <Button
@@ -80,15 +106,15 @@ export default function SimulationControls({
             <span className="hidden sm:inline">Reset</span>
           </Button>
 
-          {canAutoComplete && (
-            <Button
-              onClick={onComplete}
-              className="bg-cyan-500 hover:bg-cyan-600 text-white py-6 font-semibold flex items-center justify-center gap-2"
-            >
-              <SkipForward size={20} />
-              <span className="hidden sm:inline">Results</span>
-            </Button>
-          )}
+          <Button
+            onClick={onSkipToEnd}
+            disabled={phase !== Phase.EXECUTING}
+            className="bg-purple-500 hover:bg-purple-600 disabled:opacity-50 text-white py-6 font-semibold flex items-center justify-center gap-2"
+            title="Skip to End"
+          >
+            <ChevronsRight size={20} />
+            <span className="hidden sm:inline">Skip</span>
+          </Button>
         </div>
 
         {/* Phase Indicator */}
