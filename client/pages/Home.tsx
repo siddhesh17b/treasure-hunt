@@ -147,6 +147,32 @@ export default function Home() {
               <p className="text-slate-600 text-xs">Best path finding</p>
             </div>
           </div>
+
+          {/* Footer */}
+          <div className="mt-12 pt-8 border-t border-purple-200">
+            <p className="text-center text-slate-600 text-sm">
+              Created by{" "}
+              <a
+                href="https://github.com/siddhesh17b"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-purple-600 hover:text-purple-700 font-semibold hover:underline transition-colors"
+              >
+                Siddhesh Bisen
+              </a>
+              {" "}• Design & Analysis of Algorithms Lab Project
+            </p>
+            <p className="text-center text-slate-500 text-xs mt-2">
+              <a
+                href="https://github.com/siddhesh17b/treasure-hunt"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-purple-500 hover:text-purple-600 hover:underline transition-colors"
+              >
+                View on GitHub
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </div>

@@ -39,8 +39,9 @@ Before running this project locally, ensure you have:
 ## 🏃 Running Locally
 
 ### 1. Clone the repository
+
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/siddhesh17b/treasure-hunt.git
 cd treasure-hunt
 ```
 
@@ -174,6 +175,10 @@ This is an educational project for DAA (Design & Analysis of Algorithms) lab. Fe
 MIT License - See [LICENSE](LICENSE) file for details
 
 ## 👨‍💻 Author
+
+**Siddhesh Bisen**
+- GitHub: [@siddhesh17b](https://github.com/siddhesh17b)
+- Project Repository: [treasure-hunt](https://github.com/siddhesh17b/treasure-hunt)
 
 Created as part of Design & Analysis of Algorithms coursework
 

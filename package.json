@@ -3,6 +3,14 @@
   "version": "1.0.0",
   "description": "Interactive visualization tool for pathfinding algorithms solving the Traveling Salesman Problem variant",
   "homepage": "https://treasure-hunt-daa-solver.netlify.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/siddhesh17b/treasure-hunt"
+  },
+  "author": {
+    "name": "Siddhesh Bisen",
+    "url": "https://github.com/siddhesh17b"
+  },
   "private": true,
   "type": "module",
   "pkg": {
