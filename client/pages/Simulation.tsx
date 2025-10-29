@@ -171,43 +171,7 @@ export default function Simulation() {
     return () => clearInterval(timer);
   }, []);
 
-  // Step control handlers
-  const handleStepBackward = () => {
-    if (!result || currentStepIndex <= 0) return;
-    const newIndex = currentStepIndex - 1;
-    setCurrentStepIndex(newIndex);
-    setExplorerPos(result.completePath[newIndex]);
-    
-    // Recalculate treasure count based on treasures encountered up to this point
-    const treasuresEncountered = new Set<string>();
-    for (let i = 0; i <= newIndex; i++) {
-      const pos = result.completePath[i];
-      const treasure = result.treasures.find(t => t.equals(pos));
-      if (treasure) {
-        treasuresEncountered.add(treasure.hash());
-      }
-    }
-    setTreasuresCollected(treasuresEncountered.size);
-  };
-
-  const handleStepForward = () => {
-    if (!result || currentStepIndex >= result.completePath.length - 1) return;
-    const newIndex = currentStepIndex + 1;
-    setCurrentStepIndex(newIndex);
-    setExplorerPos(result.completePath[newIndex]);
-    
-    // Recalculate treasure count based on treasures encountered up to this point
-    const treasuresEncountered = new Set<string>();
-    for (let i = 0; i <= newIndex; i++) {
-      const pos = result.completePath[i];
-      const treasure = result.treasures.find(t => t.equals(pos));
-      if (treasure) {
-        treasuresEncountered.add(treasure.hash());
-      }
-    }
-    setTreasuresCollected(treasuresEncountered.size);
-  };
-
+  // Skip to end handler
   const handleSkipToEnd = () => {
     if (!result) return;
     setIsPaused(true);
@@ -308,8 +272,6 @@ export default function Simulation() {
             onSpeedChange={setSpeed}
             phase={phase}
             canAutoComplete={phase === Phase.COMPLETE}
-            onStepBackward={handleStepBackward}
-            onStepForward={handleStepForward}
             onSkipToEnd={handleSkipToEnd}
           />
         )}

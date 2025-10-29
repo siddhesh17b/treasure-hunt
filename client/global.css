@@ -12,51 +12,51 @@
    * A different format will require also updating the theme in tailwind.config.ts.
   */
   :root {
-    --background: 15 20% 12%;
-    --foreground: 0 0% 98%;
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
 
-    --card: 15 18% 18%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
-    --popover: 15 20% 12%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 45 86% 48%;
-    --primary-foreground: 15 20% 12%;
+    --primary: 262 83% 58%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 200 80% 50%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 217 32% 20%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 180 95% 45%;
-    --accent-foreground: 15 20% 12%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217 32% 25%;
-    --input: 217 32% 25%;
-    --ring: 45 86% 48%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 262 83% 58%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 15 18% 18%;
+    --sidebar-background: 0 0% 100%;
 
-    --sidebar-foreground: 0 0% 98%;
+    --sidebar-foreground: 222 47% 11%;
 
-    --sidebar-primary: 45 86% 48%;
+    --sidebar-primary: 262 83% 58%;
 
-    --sidebar-primary-foreground: 15 20% 12%;
+    --sidebar-primary-foreground: 210 40% 98%;
 
-    --sidebar-accent: 200 80% 50%;
+    --sidebar-accent: 210 40% 96%;
 
-    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-accent-foreground: 222 47% 11%;
 
-    --sidebar-border: 217 32% 25%;
+    --sidebar-border: 214 32% 91%;
 
-    --sidebar-ring: 45 86% 48%;
+    --sidebar-ring: 262 83% 58%;
 
     /* Game Colors */
     --game-start: 120 75% 45%;

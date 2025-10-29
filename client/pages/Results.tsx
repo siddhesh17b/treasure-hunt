@@ -107,16 +107,16 @@ export default function Results() {
             {stats.map((stat) => (
               <div
                 key={stat.label}
-                className={`bg-gradient-to-br ${stat.color} p-6 rounded-lg border border-white/20 shadow-xl`}
+                className={`bg-gradient-to-br ${stat.color} p-6 rounded-2xl border-2 border-white/30 shadow-xl`}
               >
                 <div className="text-4xl mb-3">{stat.icon}</div>
                 <div className="text-4xl font-bold text-white mb-2">
                   {typeof stat.value === "number" ? stat.value.toLocaleString() : stat.value}
                 </div>
-                <div className="text-sm text-white/80 mb-1 font-semibold uppercase">
+                <div className="text-sm text-white/90 mb-1 font-semibold uppercase">
                   {stat.label}
                 </div>
-                <div className="text-xs text-white/60">{stat.unit}</div>
+                <div className="text-xs text-white/70">{stat.unit}</div>
               </div>
             ))}
           </div>
@@ -125,8 +125,8 @@ export default function Results() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
             {/* Path Map */}
             <div className="lg:col-span-2">
-              <div className="bg-slate-900/50 border border-cyan-500/20 rounded-lg p-8 backdrop-blur-sm">
-                <h2 className="text-xl font-bold text-white mb-6">Optimal Path Visualization</h2>
+              <div className="bg-white/80 backdrop-blur-xl border border-purple-200 rounded-2xl shadow-xl p-8">
+                <h2 className="text-xl font-bold text-slate-800 mb-6">Optimal Path Visualization</h2>
                 <ResultsCanvas result={result} grid={grid} />
               </div>
             </div>
@@ -134,17 +134,17 @@ export default function Results() {
             {/* Route Details */}
             <div className="space-y-6">
               {/* Journey Summary */}
-              <div className="bg-slate-900/50 border border-cyan-500/20 rounded-lg p-6 backdrop-blur-sm">
-                <h3 className="text-lg font-bold text-white mb-4">Journey Summary</h3>
+              <div className="bg-white/80 backdrop-blur-xl border border-purple-200 rounded-2xl shadow-xl p-6">
+                <h3 className="text-lg font-bold text-slate-800 mb-4">Journey Summary</h3>
 
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-xs">
+                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-xs shadow-md">
                       1
                     </div>
                     <div>
-                      <p className="text-sm text-gray-300">Start</p>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-sm text-slate-700 font-semibold">Start</p>
+                      <p className="text-xs text-slate-500">
                         Position ({result.optimalRoute[0]?.row}, {result.optimalRoute[0]?.col})
                       </p>
                     </div>
@@ -152,12 +152,12 @@ export default function Results() {
 
                   {result.optimalRoute.map((treasure, idx) => (
                     <div key={idx} className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center text-white font-bold text-xs">
+                      <div className="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center text-white font-bold text-xs shadow-md">
                         {idx + 2}
                       </div>
                       <div>
-                        <p className="text-sm text-gray-300">Treasure {idx + 1}</p>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-sm text-slate-700 font-semibold">Treasure {idx + 1}</p>
+                        <p className="text-xs text-slate-500">
                           Position ({treasure.row}, {treasure.col})
                         </p>
                       </div>
@@ -165,30 +165,30 @@ export default function Results() {
                   ))}
 
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white font-bold text-xs">
+                    <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white font-bold text-xs shadow-md">
                       ✓
                     </div>
                     <div>
-                      <p className="text-sm text-gray-300">Goal Reached</p>
-                      <p className="text-xs text-gray-400 text-green-400 font-semibold">Success!</p>
+                      <p className="text-sm text-slate-700 font-semibold">Goal Reached</p>
+                      <p className="text-xs text-green-500 font-semibold">Success!</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Algorithm Info */}
-              <div className="bg-slate-900/50 border border-cyan-500/20 rounded-lg p-6 backdrop-blur-sm">
-                <h3 className="text-sm font-bold text-white mb-3 uppercase">Algorithms Used</h3>
+              <div className="bg-white/80 backdrop-blur-xl border border-purple-200 rounded-2xl shadow-xl p-6">
+                <h3 className="text-sm font-bold text-slate-800 mb-3 uppercase">Algorithms Used</h3>
                 <div className="space-y-3 text-sm">
-                  <div className="bg-blue-500/20 border border-blue-500/50 rounded px-3 py-2">
-                    <p className="text-blue-300 font-semibold">⭐ Greedy Best-First Search</p>
-                    <p className="text-blue-200/70 text-xs mt-1">
+                  <div className="bg-blue-50 border-2 border-blue-200 rounded-lg px-3 py-2">
+                    <p className="text-blue-700 font-semibold">⭐ Greedy Best-First Search</p>
+                    <p className="text-blue-600 text-xs mt-1">
                       Found shortest paths between all key points
                     </p>
                   </div>
-                  <div className="bg-orange-500/20 border border-orange-500/50 rounded px-3 py-2">
-                    <p className="text-orange-300 font-semibold">🔄 Backtracking</p>
-                    <p className="text-orange-200/70 text-xs mt-1">
+                  <div className="bg-orange-50 border-2 border-orange-200 rounded-lg px-3 py-2">
+                    <p className="text-orange-700 font-semibold">🔄 Backtracking</p>
+                    <p className="text-orange-600 text-xs mt-1">
                       Optimized treasure collection order
                     </p>
                   </div>
@@ -201,7 +201,7 @@ export default function Results() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Button
               onClick={() => navigate("/editor")}
-              className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-6 flex items-center justify-center gap-2"
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-6 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all"
             >
               <RotateCcw size={20} />
               New Map
@@ -209,7 +209,7 @@ export default function Results() {
 
             <Button
               onClick={() => navigate("/")}
-              className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-6 flex items-center justify-center gap-2"
+              className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-semibold py-6 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all"
             >
               <Home size={20} />
               Home
@@ -217,7 +217,7 @@ export default function Results() {
 
             <Button
               variant="outline"
-              className="border-green-400/50 text-green-300 hover:bg-green-500/20 font-semibold py-6"
+              className="border-2 border-green-400 text-green-600 hover:bg-green-50 font-semibold py-6 shadow-md hover:shadow-lg transition-all"
             >
               📸 Share Results
             </Button>

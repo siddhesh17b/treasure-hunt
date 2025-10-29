@@ -26,6 +26,53 @@ export default function SimulationCanvas({
   const [cellSize, setCellSize] = useState(40);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const drawBrickPattern = (
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ) => {
+    // Base color - darker slate
+    ctx.fillStyle = "#64748b";
+    ctx.fillRect(x, y, width, height);
+
+    // Brick pattern
+    const brickHeight = height / 3;
+    const brickWidth = width / 2;
+
+    // Draw mortar lines
+    ctx.strokeStyle = "#475569";
+    ctx.lineWidth = 1;
+
+    // Horizontal lines
+    ctx.beginPath();
+    ctx.moveTo(x, y + brickHeight);
+    ctx.lineTo(x + width, y + brickHeight);
+    ctx.moveTo(x, y + brickHeight * 2);
+    ctx.lineTo(x + width, y + brickHeight * 2);
+    ctx.stroke();
+
+    // Vertical lines (offset pattern)
+    ctx.beginPath();
+    // Top row
+    ctx.moveTo(x + brickWidth, y);
+    ctx.lineTo(x + brickWidth, y + brickHeight);
+    // Middle row (offset)
+    ctx.moveTo(x + brickWidth / 2, y + brickHeight);
+    ctx.lineTo(x + brickWidth / 2, y + brickHeight * 2);
+    ctx.moveTo(x + brickWidth * 1.5, y + brickHeight);
+    ctx.lineTo(x + brickWidth * 1.5, y + brickHeight * 2);
+    // Bottom row
+    ctx.moveTo(x + brickWidth, y + brickHeight * 2);
+    ctx.lineTo(x + brickWidth, y + height);
+    ctx.stroke();
+
+    // Add subtle shadow for depth
+    ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
+    ctx.fillRect(x + 1, y + 1, width - 2, height - 2);
+  };
+
   useEffect(() => {
     const updateCellSize = () => {
       if (!containerRef.current) return;
@@ -90,16 +137,20 @@ export default function SimulationCanvas({
             fillColor = "#fde047";
             break;
           case CellType.WALL:
-            fillColor = "#cbd5e1";
+            // Draw brick pattern for walls
+            drawBrickPattern(ctx, x, y, cellSize, cellSize);
+            fillColor = null; // Skip normal fill
             break;
           case CellType.EMPTY:
             fillColor = "#ffffff";
             break;
         }
 
-        // Draw cell
-        ctx.fillStyle = fillColor;
-        ctx.fillRect(x, y, cellSize, cellSize);
+        // Draw cell (skip if brick pattern was drawn)
+        if (fillColor) {
+          ctx.fillStyle = fillColor;
+          ctx.fillRect(x, y, cellSize, cellSize);
+        }
 
         // Draw border
         ctx.strokeStyle = "#e9d5ff";

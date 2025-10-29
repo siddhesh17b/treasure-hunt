@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Phase } from "@shared/types";
-import { Play, Pause, RotateCcw, SkipForward, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { Play, Pause, RotateCcw, ChevronsRight } from "lucide-react";
 
 interface SimulationControlsProps {
   isPaused: boolean;
@@ -12,8 +12,6 @@ interface SimulationControlsProps {
   onSpeedChange: (speed: number) => void;
   phase: Phase;
   canAutoComplete: boolean;
-  onStepBackward?: () => void;
-  onStepForward?: () => void;
   onSkipToEnd?: () => void;
 }
 
@@ -26,8 +24,6 @@ export default function SimulationControls({
   onSpeedChange,
   phase,
   canAutoComplete,
-  onStepBackward,
-  onStepForward,
   onSkipToEnd,
 }: SimulationControlsProps) {
   return (
@@ -55,17 +51,7 @@ export default function SimulationControls({
         </div>
 
         {/* Playback Controls */}
-        <div className="grid grid-cols-5 gap-2">
-          <Button
-            onClick={onStepBackward}
-            disabled={!isPaused || phase !== Phase.EXECUTING}
-            variant="outline"
-            className="border-2 border-purple-300 text-purple-700 hover:bg-purple-50 py-6 font-semibold flex items-center justify-center disabled:opacity-30"
-            title="Step Backward"
-          >
-            <ChevronLeft size={20} />
-          </Button>
-
+        <div className="grid grid-cols-3 gap-2">
           <Button
             onClick={onPauseToggle}
             className={`py-6 font-semibold flex items-center justify-center gap-2 shadow-md ${
@@ -85,16 +71,6 @@ export default function SimulationControls({
                 <span className="hidden sm:inline">Pause</span>
               </>
             )}
-          </Button>
-
-          <Button
-            onClick={onStepForward}
-            disabled={!isPaused || phase !== Phase.EXECUTING}
-            variant="outline"
-            className="border-2 border-purple-300 text-purple-700 hover:bg-purple-50 py-6 font-semibold flex items-center justify-center disabled:opacity-30"
-            title="Step Forward"
-          >
-            <ChevronRight size={20} />
           </Button>
 
           <Button

@@ -9,6 +9,53 @@ interface ResultsCanvasProps {
 export default function ResultsCanvas({ result, grid }: ResultsCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  const drawBrickPattern = (
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ) => {
+    // Base color - darker slate
+    ctx.fillStyle = "#64748b";
+    ctx.fillRect(x, y, width, height);
+
+    // Brick pattern
+    const brickHeight = height / 3;
+    const brickWidth = width / 2;
+
+    // Draw mortar lines
+    ctx.strokeStyle = "#475569";
+    ctx.lineWidth = 1;
+
+    // Horizontal lines
+    ctx.beginPath();
+    ctx.moveTo(x, y + brickHeight);
+    ctx.lineTo(x + width, y + brickHeight);
+    ctx.moveTo(x, y + brickHeight * 2);
+    ctx.lineTo(x + width, y + brickHeight * 2);
+    ctx.stroke();
+
+    // Vertical lines (offset pattern)
+    ctx.beginPath();
+    // Top row
+    ctx.moveTo(x + brickWidth, y);
+    ctx.lineTo(x + brickWidth, y + brickHeight);
+    // Middle row (offset)
+    ctx.moveTo(x + brickWidth / 2, y + brickHeight);
+    ctx.lineTo(x + brickWidth / 2, y + brickHeight * 2);
+    ctx.moveTo(x + brickWidth * 1.5, y + brickHeight);
+    ctx.lineTo(x + brickWidth * 1.5, y + brickHeight * 2);
+    // Bottom row
+    ctx.moveTo(x + brickWidth, y + brickHeight * 2);
+    ctx.lineTo(x + brickWidth, y + height);
+    ctx.stroke();
+
+    // Add subtle shadow for depth
+    ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
+    ctx.fillRect(x + 1, y + 1, width - 2, height - 2);
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -35,24 +82,29 @@ export default function ResultsCanvas({ result, grid }: ResultsCanvasProps) {
           const x = c * cellSize;
           const y = r * cellSize;
 
-          // Determine cell color from actual grid
-          let bgColor = "#1e293b"; // Default empty cell (slate-800)
+          // Determine cell color from actual grid - using light theme colors
+          let bgColor = "#ffffff"; // Default empty cell (white)
           
           if (cell.type === CellType.WALL) {
-            bgColor = "#334155"; // Wall (slate-700)
+            // Draw brick pattern for walls
+            drawBrickPattern(ctx, x, y, cellSize, cellSize);
+            bgColor = null; // Skip normal fill
           } else if (cell.type === CellType.START) {
-            bgColor = "#15803d"; // Start (green-700)
+            bgColor = "#86efac"; // Start (green-300)
           } else if (cell.type === CellType.GOAL) {
-            bgColor = "#b91c1c"; // Goal (red-700)
+            bgColor = "#fca5a5"; // Goal (red-300)
           } else if (cell.type === CellType.TREASURE) {
-            bgColor = "#ca8a04"; // Treasure (yellow-600)
+            bgColor = "#fde047"; // Treasure (yellow-300)
           }
 
-          ctx.fillStyle = bgColor;
-          ctx.fillRect(x, y, cellSize, cellSize);
+          // Draw cell (skip if brick pattern was drawn)
+          if (bgColor) {
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(x, y, cellSize, cellSize);
+          }
 
           // Draw cell border
-          ctx.strokeStyle = "#475569";
+          ctx.strokeStyle = "#e9d5ff";
           ctx.lineWidth = 1;
           ctx.strokeRect(x, y, cellSize, cellSize);
         }
@@ -77,8 +129,8 @@ export default function ResultsCanvas({ result, grid }: ResultsCanvasProps) {
           );
 
           const progress = i / (result.completePath.length - 1);
-          gradient.addColorStop(0, `rgba(34, 211, 238, ${0.8 - progress * 0.3})`);
-          gradient.addColorStop(1, `rgba(59, 130, 246, ${0.8 - progress * 0.3})`);
+          gradient.addColorStop(0, `rgba(168, 85, 247, ${0.8 - progress * 0.3})`);
+          gradient.addColorStop(1, `rgba(236, 72, 153, ${0.8 - progress * 0.3})`);
 
           ctx.strokeStyle = gradient;
           ctx.beginPath();
@@ -114,17 +166,17 @@ export default function ResultsCanvas({ result, grid }: ResultsCanvasProps) {
 
       // Draw start
       if (grid.start) {
-        drawIcon(grid.start, "🚩", "#15803d");
+        drawIcon(grid.start, "🚩", "#86efac");
       }
 
       // Draw goal
       if (grid.goal) {
-        drawIcon(grid.goal, "🎯", "#b91c1c");
+        drawIcon(grid.goal, "🎯", "#fca5a5");
       }
 
       // Draw treasures
       grid.treasures.forEach((treasure) => {
-        drawIcon(treasure, "💎", "#ca8a04");
+        drawIcon(treasure, "💎", "#fde047");
       });
     };
 
