@@ -1,172 +1,143 @@
-import { useRef, useEffect, useState } from "react";
-import { SimulationResult, CellType, Position } from "@shared/types";
+import { useEffect, useRef } from "react";
+import { SimulationResult, Position, Grid, CellType } from "@shared/types";
 
 interface ResultsCanvasProps {
   result: SimulationResult;
+  grid: Grid;
 }
 
-export default function ResultsCanvas({ result }: ResultsCanvasProps) {
+export default function ResultsCanvas({ result, grid }: ResultsCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [cellSize, setCellSize] = useState(40);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const rows = 10;
-  const cols = 10;
-
-  useEffect(() => {
-    const updateCellSize = () => {
-      if (!containerRef.current) return;
-      const width = containerRef.current.clientWidth;
-      const availableSize = Math.floor((width - 20) / cols);
-      setCellSize(Math.min(availableSize, 60));
-    };
-
-    updateCellSize();
-    window.addEventListener("resize", updateCellSize);
-    return () => window.removeEventListener("resize", updateCellSize);
-  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const drawGrid = () => {
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-    const padding = 2;
-    const gridWidth = cellSize * cols + (cols + 1) * padding;
-    const gridHeight = cellSize * rows + (rows + 1) * padding;
+      const rows = grid.rows;
+      const cols = grid.cols;
+      const containerWidth = canvas.parentElement?.clientWidth || 600;
+      const cellSize = Math.min((containerWidth - 20) / cols, 60);
 
-    canvas.width = gridWidth;
-    canvas.height = gridHeight;
+      canvas.width = cellSize * cols;
+      canvas.height = cellSize * rows;
 
-    // Draw background grid
-    ctx.fillStyle = "#f5f5f5";
-    ctx.fillRect(0, 0, gridWidth, gridHeight);
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw grid cells
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const x = c * (cellSize + padding) + padding;
-        const y = r * (cellSize + padding) + padding;
+      // Draw cells based on actual grid
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const cell = grid.cells[r][c];
+          const x = c * cellSize;
+          const y = r * cellSize;
 
-        // Default color
-        let fillColor = "#ffffff";
+          // Determine cell color from actual grid
+          let bgColor = "#1e293b"; // Default empty cell (slate-800)
+          
+          if (cell.type === CellType.WALL) {
+            bgColor = "#334155"; // Wall (slate-700)
+          } else if (cell.type === CellType.START) {
+            bgColor = "#15803d"; // Start (green-700)
+          } else if (cell.type === CellType.GOAL) {
+            bgColor = "#b91c1c"; // Goal (red-700)
+          } else if (cell.type === CellType.TREASURE) {
+            bgColor = "#ca8a04"; // Treasure (yellow-600)
+          }
 
-        // Check if this is a wall
-        const isWall =
-          (r > 0 && r < rows - 1 && c > 0 && c < cols - 1 && Math.random() < 0.2);
+          ctx.fillStyle = bgColor;
+          ctx.fillRect(x, y, cellSize, cellSize);
 
-        if (isWall) {
-          fillColor = "#1f2937";
+          // Draw cell border
+          ctx.strokeStyle = "#475569";
+          ctx.lineWidth = 1;
+          ctx.strokeRect(x, y, cellSize, cellSize);
         }
-
-        ctx.fillStyle = fillColor;
-        ctx.fillRect(x, y, cellSize, cellSize);
-
-        ctx.strokeStyle = "#e5e7eb";
-        ctx.lineWidth = 1;
-        ctx.strokeRect(x, y, cellSize, cellSize);
       }
-    }
 
-    // Draw final path as cyan line
-    if (result.completePath.length > 1) {
-      ctx.strokeStyle = "rgba(34, 211, 238, 0.8)";
-      ctx.lineWidth = 3;
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
+      // Draw the final path with gradient
+      if (result.completePath.length > 1) {
+        ctx.lineWidth = cellSize * 0.25;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
 
-      ctx.beginPath();
-      const firstPath = result.completePath[0];
-      ctx.moveTo(
-        firstPath.col * (cellSize + padding) + padding + cellSize / 2,
-        firstPath.row * (cellSize + padding) + padding + cellSize / 2
-      );
+        for (let i = 0; i < result.completePath.length - 1; i++) {
+          const from = result.completePath[i];
+          const to = result.completePath[i + 1];
 
-      for (let i = 1; i < result.completePath.length; i++) {
-        const pos = result.completePath[i];
-        ctx.lineTo(
-          pos.col * (cellSize + padding) + padding + cellSize / 2,
-          pos.row * (cellSize + padding) + padding + cellSize / 2
+          // Create gradient for path segment
+          const gradient = ctx.createLinearGradient(
+            (from.col + 0.5) * cellSize,
+            (from.row + 0.5) * cellSize,
+            (to.col + 0.5) * cellSize,
+            (to.row + 0.5) * cellSize
+          );
+
+          const progress = i / (result.completePath.length - 1);
+          gradient.addColorStop(0, `rgba(34, 211, 238, ${0.8 - progress * 0.3})`);
+          gradient.addColorStop(1, `rgba(59, 130, 246, ${0.8 - progress * 0.3})`);
+
+          ctx.strokeStyle = gradient;
+          ctx.beginPath();
+          ctx.moveTo((from.col + 0.5) * cellSize, (from.row + 0.5) * cellSize);
+          ctx.lineTo((to.col + 0.5) * cellSize, (to.row + 0.5) * cellSize);
+          ctx.stroke();
+        }
+      }
+
+      // Draw special cells with icons
+      const drawIcon = (pos: Position, emoji: string, bgColor: string) => {
+        const x = pos.col * cellSize;
+        const y = pos.row * cellSize;
+
+        // Draw background circle
+        ctx.fillStyle = bgColor;
+        ctx.beginPath();
+        ctx.arc(
+          x + cellSize / 2,
+          y + cellSize / 2,
+          cellSize * 0.35,
+          0,
+          Math.PI * 2
         );
-      }
-      ctx.stroke();
-    }
+        ctx.fill();
 
-    // Draw start point
-    const start = result.completePath[0];
-    const startX = start.col * (cellSize + padding) + padding + cellSize / 2;
-    const startY = start.row * (cellSize + padding) + padding + cellSize / 2;
-
-    ctx.fillStyle = "#22c55e";
-    ctx.beginPath();
-    ctx.arc(startX, startY, cellSize / 2.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    if (cellSize > 20) {
-      ctx.font = `${Math.floor(cellSize * 0.6)}px Arial`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillStyle = "#ffffff";
-      ctx.fillText("🚩", startX, startY);
-    }
-
-    // Draw treasures collected
-    result.treasures.forEach((treasure, idx) => {
-      const treasureX = treasure.col * (cellSize + padding) + padding + cellSize / 2;
-      const treasureY = treasure.row * (cellSize + padding) + padding + cellSize / 2;
-
-      ctx.fillStyle = "#fbbf24";
-      ctx.beginPath();
-      ctx.arc(treasureX, treasureY, cellSize / 2.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.strokeStyle = "#ffffff";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      if (cellSize > 20) {
-        ctx.font = `${Math.floor(cellSize * 0.6)}px Arial`;
+        // Draw emoji
+        ctx.font = `${cellSize * 0.5}px Arial`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("💎", treasureX, treasureY);
+        ctx.fillText(emoji, x + cellSize / 2, y + cellSize / 2);
+      };
+
+      // Draw start
+      if (grid.start) {
+        drawIcon(grid.start, "🚩", "#15803d");
       }
-    });
 
-    // Draw goal
-    const goal = result.completePath[result.completePath.length - 1];
-    const goalX = goal.col * (cellSize + padding) + padding + cellSize / 2;
-    const goalY = goal.row * (cellSize + padding) + padding + cellSize / 2;
+      // Draw goal
+      if (grid.goal) {
+        drawIcon(grid.goal, "🎯", "#b91c1c");
+      }
 
-    ctx.fillStyle = "#ef4444";
-    ctx.beginPath();
-    ctx.arc(goalX, goalY, cellSize / 2.5, 0, Math.PI * 2);
-    ctx.fill();
+      // Draw treasures
+      grid.treasures.forEach((treasure) => {
+        drawIcon(treasure, "💎", "#ca8a04");
+      });
+    };
 
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 2;
-    ctx.stroke();
+    drawGrid();
 
-    if (cellSize > 20) {
-      ctx.font = `${Math.floor(cellSize * 0.6)}px Arial`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("🎯", goalX, goalY);
-    }
-  }, [cellSize, result]);
+    // Redraw on window resize
+    window.addEventListener("resize", drawGrid);
+    return () => window.removeEventListener("resize", drawGrid);
+  }, [result, grid]);
 
   return (
-    <div ref={containerRef} className="w-full flex justify-center">
-      <canvas
-        ref={canvasRef}
-        className="rounded-lg border-2 border-slate-400 shadow-lg"
-        style={{ maxWidth: "100%", height: "auto" }}
-      />
+    <div className="w-full flex justify-center">
+      <canvas ref={canvasRef} className="max-w-full" />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import MetricsPanel from "../components/MetricsPanel";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 interface LocationState {
   gridData?: any;
@@ -153,7 +154,7 @@ export default function Simulation() {
       setPhase(Phase.COMPLETE);
       setIsAnimating(false);
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      navigate("/results", { state: { result } });
+      navigate("/results", { state: { result, gridData: grid.serialize() } });
     };
 
     if (phase === Phase.EXECUTING && !isLoading && !isAnimating) {
@@ -219,12 +220,13 @@ export default function Simulation() {
     
     // Navigate to results after a short delay
     setTimeout(() => {
-      navigate("/results", { state: { result } });
+      navigate("/results", { state: { result, gridData: grid.serialize() } });
     }, 1000);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-4 md:p-8">
+      <Toaster />
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
@@ -232,17 +234,17 @@ export default function Simulation() {
             variant="ghost"
             size="icon"
             onClick={() => navigate("/editor")}
-            className="text-gray-300 hover:text-white"
+            className="text-slate-700 hover:text-slate-900 hover:bg-white/50"
           >
             <ArrowLeft size={24} />
           </Button>
-          <h1 className="text-3xl font-bold text-white">Algorithm Visualization</h1>
+          <h1 className="text-3xl font-bold text-slate-800">Algorithm Visualization</h1>
         </div>
         <Button
           variant="outline"
           size="sm"
           onClick={() => navigate("/about")}
-          className="border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/20"
+          className="border-purple-300 text-purple-700 hover:bg-purple-50"
         >
           <BookOpen size={18} className="mr-2" />
           Learn More
@@ -263,7 +265,7 @@ export default function Simulation() {
         />
 
         {/* Main Visualization Area */}
-        <div className="mt-8 bg-slate-900/50 border border-cyan-500/20 rounded-lg p-8 backdrop-blur-sm">
+        <div className="mt-8 bg-white/80 backdrop-blur-xl border border-purple-200 rounded-2xl shadow-xl p-8">
           <SimulationCanvas
             grid={grid}
             explorerPosition={explorerPos}
@@ -279,11 +281,11 @@ export default function Simulation() {
           {isLoading && (
             <div className="mt-6 text-center">
               <div className="flex items-center justify-center gap-3 mb-2">
-                <div className="w-3 h-3 bg-cyan-500 rounded-full animate-pulse" />
-                <p className="text-gray-300 text-lg">{phaseMessage}</p>
+                <div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse" />
+                <p className="text-slate-700 text-lg font-medium">{phaseMessage}</p>
               </div>
               {phase === Phase.PREPROCESSING && exploredNodes.length > 0 && (
-                <p className="text-cyan-400 text-sm">
+                <p className="text-purple-600 text-sm font-semibold">
                   Nodes explored: {exploredNodes.length}
                 </p>
               )}
@@ -299,7 +301,7 @@ export default function Simulation() {
             onReset={() => navigate("/editor")}
             onComplete={() => {
               if (result) {
-                navigate("/results", { state: { result } });
+                navigate("/results", { state: { result, gridData: grid.serialize() } });
               }
             }}
             speed={speed}

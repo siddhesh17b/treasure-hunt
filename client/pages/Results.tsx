@@ -1,11 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { SimulationResult } from "@shared/types";
+import { SimulationResult, Grid } from "@shared/types";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Home, RotateCcw } from "lucide-react";
 import ResultsCanvas from "../components/ResultsCanvas";
+import { Toaster } from "@/components/ui/sonner";
 
 interface LocationState {
   result?: SimulationResult;
+  gridData?: any;
 }
 
 export default function Results() {
@@ -13,8 +15,17 @@ export default function Results() {
   const navigate = useNavigate();
 
   const result = (location.state as LocationState)?.result;
+  const gridData = (location.state as LocationState)?.gridData;
 
-  if (!result) {
+  if (!result || !gridData) {
+    navigate("/");
+    return null;
+  }
+
+  let grid: Grid;
+  try {
+    grid = Grid.deserialize(gridData);
+  } catch (error) {
     navigate("/");
     return null;
   }
@@ -51,11 +62,12 @@ export default function Results() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-4 md:p-8">
+      <Toaster />
       {/* Animated confetti background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-200/30 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-pink-200/30 rounded-full blur-3xl animate-pulse" />
       </div>
 
       <div className="relative z-10">
@@ -65,7 +77,7 @@ export default function Results() {
             variant="ghost"
             size="icon"
             onClick={() => navigate("/")}
-            className="text-gray-300 hover:text-white"
+            className="text-slate-700 hover:text-slate-900 hover:bg-white/50"
           >
             <ArrowLeft size={24} />
           </Button>
@@ -76,16 +88,16 @@ export default function Results() {
           <div className="text-center mb-12">
             <div className="mb-6 flex justify-center">
               <div className="relative">
-                <div className="absolute inset-0 bg-green-400/30 rounded-full blur-3xl animate-pulse" />
+                <div className="absolute inset-0 bg-green-300/40 rounded-full blur-3xl animate-pulse" />
                 <div className="relative text-6xl md:text-8xl">🎉</div>
               </div>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">
+            <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
               Mission Complete!
             </h1>
-            <p className="text-xl text-cyan-300 mb-2">Optimal path found and executed</p>
-            <p className="text-gray-400">
+            <p className="text-xl text-purple-700 mb-2 font-semibold">Optimal path found and executed</p>
+            <p className="text-slate-600">
               The explorer successfully navigated to collect all treasures and reach the goal
             </p>
           </div>
@@ -115,7 +127,7 @@ export default function Results() {
             <div className="lg:col-span-2">
               <div className="bg-slate-900/50 border border-cyan-500/20 rounded-lg p-8 backdrop-blur-sm">
                 <h2 className="text-xl font-bold text-white mb-6">Optimal Path Visualization</h2>
-                <ResultsCanvas result={result} />
+                <ResultsCanvas result={result} grid={grid} />
               </div>
             </div>
 

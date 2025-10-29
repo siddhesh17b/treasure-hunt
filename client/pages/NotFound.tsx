@@ -15,18 +15,18 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
       <div className="text-center max-w-md">
-        <div className="text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-4">
+        <div className="text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
           404
         </div>
-        <h1 className="text-3xl font-bold text-white mb-4">Page Not Found</h1>
-        <p className="text-gray-400 mb-8">
+        <h1 className="text-3xl font-bold text-slate-800 mb-4">Page Not Found</h1>
+        <p className="text-slate-600 mb-8">
           Oops! It looks like you've wandered off the treasure map. Let's get you back on track.
         </p>
         <Button
           onClick={() => navigate("/")}
-          className="bg-green-500 hover:bg-green-600 text-white font-semibold py-6 px-8 flex items-center justify-center gap-2 w-full sm:w-auto mx-auto"
+          className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold py-6 px-8 flex items-center justify-center gap-2 w-full sm:w-auto mx-auto shadow-lg"
         >
           <Home size={20} />
           Return to Home

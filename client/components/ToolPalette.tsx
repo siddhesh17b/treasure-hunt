@@ -23,10 +23,10 @@ export default function ToolPalette({ selectedTool, onSelectTool }: ToolPaletteP
           <button
             key={tool.type}
             onClick={() => onSelectTool(tool.type)}
-            className={`flex flex-col items-center gap-2 py-4 px-3 rounded-lg transition-all duration-200 border-2 ${
+            className={`flex flex-col items-center gap-2 py-4 px-3 rounded-xl transition-all duration-200 border-2 shadow-sm ${
               isSelected
-                ? `${tool.bgColor} text-white border-white shadow-lg`
-                : `border-gray-600 text-gray-300 hover:border-gray-400 bg-slate-800/50`
+                ? `${tool.bgColor} text-white border-white shadow-lg scale-105`
+                : `border-purple-200 text-slate-700 hover:border-purple-300 hover:bg-purple-50 bg-white`
             }`}
           >
             <span className="text-2xl">{tool.icon}</span>

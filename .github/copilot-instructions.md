@@ -95,11 +95,34 @@ class Position {
   // Then: Grid.deserialize((location.state as any)?.gridData)
   ```
 
+### Simulation Page Pattern
+```typescript
+const [grid, setGrid] = useState<Grid>(() => new Grid(GRID_SIZE, GRID_SIZE))
+const [exploredNodes, setExploredNodes] = useState<Position[]>([])
+
+// Pass grid data to Results page via location.state
+navigate("/results", { state: { result, gridData: grid.serialize() } })
+```
+
+### Results Page Pattern
+```typescript
+// Receive both result and grid data from navigation state
+const result = (location.state as LocationState)?.result;
+const gridData = (location.state as LocationState)?.gridData;
+
+// Deserialize grid and pass to ResultsCanvas
+const grid = Grid.deserialize(gridData);
+```
+
 ### Canvas Components (GridCanvas, SimulationCanvas, ResultsCanvas)
 - **Manual DOM-based rendering** with `useRef` + CSS Grid layout
 - Responsive cell sizing: `cellSize = Math.min((containerWidth - 20) / grid.cols, 60)`
-- Color coding via `getCellColor()` helper functions
+- Color coding via actual grid cell types (no random generation)
 - Emoji icons for cell types: 🚩 (START), 🎯 (GOAL), 💎 (TREASURE)
+- **Exploration Animation**: Wave/ripple effect for preprocessing phase
+  - Blue gradient fades in as nodes are explored (opacity 0.1 → 0.4)
+  - Cyan wave effect on last 30 explored nodes with pulsing opacity
+  - Bright cyan border on newest 5 nodes for scanning effect
 
 ### Editor Page Pattern
 ```typescript
@@ -131,8 +154,10 @@ handleSkipToEnd() // Jump to completion
 
 ### Results Page Flow
 - Simulation automatically navigates to `/results` when path execution completes
+- **Grid data passed via location.state** to preserve original map design
+- ResultsCanvas renders actual grid (not randomly generated walls)
 - Shows comprehensive metrics: distance, treasures, nodes explored, routes tested
-- Displays optimal path visualization
+- Displays optimal path visualization with gradient cyan line
 - Includes journey summary with treasure collection order
 
 ## Development Workflow
@@ -266,6 +291,9 @@ Use incrementing `key` prop to force component re-mounts when grid structure cha
 3. **Map keys**: Use `.hash()` string for Map/Set keys, not Position objects
 4. **React state mutations**: Never mutate `grid.cells` directly - always `grid.copy()` first
 5. **Async animations**: Use proper async/await in useEffect to avoid race conditions
+6. **Results page grid**: Always pass `gridData: grid.serialize()` through location.state
+7. **Canvas rendering**: Use actual grid cells, never generate random walls (Math.random())
+8. **Exploration visualization**: Must track `exploredNodes` state and pass to SimulationCanvas
 
 ## File Organization
 

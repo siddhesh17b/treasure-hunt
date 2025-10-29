@@ -60,8 +60,11 @@ export default function SimulationCanvas({
     canvas.width = gridWidth;
     canvas.height = gridHeight;
 
-    // Draw background
-    ctx.fillStyle = "#f5f5f5";
+    // Draw background with subtle gradient
+    const gradient = ctx.createLinearGradient(0, 0, gridWidth, gridHeight);
+    gradient.addColorStop(0, "#faf5ff");
+    gradient.addColorStop(1, "#f3e8ff");
+    ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, gridWidth, gridHeight);
 
     // Draw grid lines and cells
@@ -78,16 +81,16 @@ export default function SimulationCanvas({
 
         switch (cell.type) {
           case CellType.START:
-            fillColor = "#22c55e";
+            fillColor = "#86efac";
             break;
           case CellType.GOAL:
-            fillColor = "#ef4444";
+            fillColor = "#fca5a5";
             break;
           case CellType.TREASURE:
-            fillColor = "#fbbf24";
+            fillColor = "#fde047";
             break;
           case CellType.WALL:
-            fillColor = "#1f2937";
+            fillColor = "#cbd5e1";
             break;
           case CellType.EMPTY:
             fillColor = "#ffffff";
@@ -99,23 +102,38 @@ export default function SimulationCanvas({
         ctx.fillRect(x, y, cellSize, cellSize);
 
         // Draw border
-        ctx.strokeStyle = "#e5e7eb";
+        ctx.strokeStyle = "#e9d5ff";
         ctx.lineWidth = 1;
         ctx.strokeRect(x, y, cellSize, cellSize);
 
-        // Show explored nodes during preprocessing phase (even when loading)
+        // Show explored nodes during preprocessing phase with ripple animation
         if (phase === Phase.PREPROCESSING && exploredNodes.length > 0) {
           const exploredIndex = exploredNodes.findIndex(n => n.equals(pos));
           if (exploredIndex !== -1 && cell.type === CellType.EMPTY) {
-            // Animate exploration with fade-in effect
-            const opacity = Math.min(0.5, 0.1 + (exploredIndex / exploredNodes.length) * 0.4);
-            ctx.fillStyle = `rgba(59, 130, 246, ${opacity})`; // Blue tint with varying opacity
+            // Calculate animation progress based on when this node was explored
+            const progress = exploredIndex / Math.max(1, exploredNodes.length);
+            
+            // Base purple gradient that fades in
+            const baseOpacity = Math.min(0.4, 0.1 + progress * 0.3);
+            ctx.fillStyle = `rgba(168, 85, 247, ${baseOpacity})`;
             ctx.fillRect(x, y, cellSize, cellSize);
             
-            // Add a pulse effect to the most recent explorations
-            if (exploredIndex >= exploredNodes.length - 20) {
-              ctx.fillStyle = `rgba(34, 211, 238, ${0.6 - (exploredNodes.length - exploredIndex) * 0.03})`;
+            // Add wave effect for recently explored nodes (last 30 nodes)
+            const recentThreshold = 30;
+            if (exploredIndex >= exploredNodes.length - recentThreshold) {
+              const recency = (exploredNodes.length - exploredIndex) / recentThreshold;
+              
+              // Pulsing pink wave
+              const waveOpacity = 0.7 * recency;
+              ctx.fillStyle = `rgba(236, 72, 153, ${waveOpacity})`;
               ctx.fillRect(x, y, cellSize, cellSize);
+              
+              // Add bright border to newest nodes
+              if (exploredIndex >= exploredNodes.length - 5) {
+                ctx.strokeStyle = `rgba(236, 72, 153, ${recency})`;
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x + 1, y + 1, cellSize - 2, cellSize - 2);
+              }
             }
           }
         }
@@ -153,9 +171,9 @@ export default function SimulationCanvas({
       }
     }
 
-    // Draw complete path as cyan line in executing phase
+    // Draw complete path as gradient line in executing phase
     if (phase === Phase.EXECUTING && completePath.length > 1) {
-      ctx.strokeStyle = "rgba(34, 211, 238, 0.6)";
+      ctx.strokeStyle = "rgba(168, 85, 247, 0.7)";
       ctx.lineWidth = 3;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
@@ -184,15 +202,15 @@ export default function SimulationCanvas({
 
       // Explorer glow
       const gradient = ctx.createRadialGradient(x, y, 0, x, y, cellSize / 2);
-      gradient.addColorStop(0, "rgba(34, 211, 238, 0.4)");
-      gradient.addColorStop(1, "rgba(34, 211, 238, 0)");
+      gradient.addColorStop(0, "rgba(168, 85, 247, 0.5)");
+      gradient.addColorStop(1, "rgba(168, 85, 247, 0)");
       ctx.fillStyle = gradient;
       ctx.beginPath();
       ctx.arc(x, y, cellSize / 2, 0, Math.PI * 2);
       ctx.fill();
 
       // Explorer circle
-      ctx.fillStyle = "#00d4ff";
+      ctx.fillStyle = "#a855f7";
       ctx.beginPath();
       ctx.arc(x, y, cellSize / 3, 0, Math.PI * 2);
       ctx.fill();
@@ -208,7 +226,7 @@ export default function SimulationCanvas({
     <div ref={containerRef} className="w-full flex justify-center min-h-[400px]">
       <canvas
         ref={canvasRef}
-        className="rounded-lg border-2 border-slate-400"
+        className="rounded-xl border-2 border-purple-300 shadow-lg"
         style={{ maxWidth: "100%", height: "auto" }}
       />
     </div>

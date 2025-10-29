@@ -24,15 +24,15 @@ export default function MetricsPanel({
   const getPhaseColor = (p: Phase) => {
     switch (p) {
       case Phase.PREPROCESSING:
-        return "bg-blue-500/20 text-blue-300 border-blue-500/50";
+        return "bg-blue-50 text-blue-700 border-blue-300";
       case Phase.OPTIMIZING:
-        return "bg-orange-500/20 text-orange-300 border-orange-500/50";
+        return "bg-orange-50 text-orange-700 border-orange-300";
       case Phase.EXECUTING:
-        return "bg-cyan-500/20 text-cyan-300 border-cyan-500/50";
+        return "bg-purple-50 text-purple-700 border-purple-300";
       case Phase.COMPLETE:
-        return "bg-green-500/20 text-green-300 border-green-500/50";
+        return "bg-green-50 text-green-700 border-green-300";
       default:
-        return "bg-gray-500/20 text-gray-300 border-gray-500/50";
+        return "bg-gray-50 text-gray-700 border-gray-300";
     }
   };
 
@@ -52,16 +52,16 @@ export default function MetricsPanel({
   };
 
   return (
-    <div className="bg-slate-900/50 border border-cyan-500/20 rounded-lg backdrop-blur-sm">
+    <div className="bg-white/80 backdrop-blur-xl border border-purple-200 rounded-2xl shadow-lg">
       {/* Phase Message */}
-      <div className="bg-slate-900/80 border-b border-cyan-500/20 p-4">
-        <p className="text-gray-300 text-center text-sm md:text-base">{phaseMessage}</p>
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-b border-purple-200 p-4">
+        <p className="text-slate-700 text-center text-sm md:text-base font-medium">{phaseMessage}</p>
       </div>
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 p-6">
         {/* Phase */}
-        <div className={`rounded-lg border p-4 text-center ${getPhaseColor(phase)}`}>
+        <div className={`rounded-xl border-2 p-4 text-center shadow-sm ${getPhaseColor(phase)}`}>
           <p className="text-xs md:text-sm font-semibold uppercase opacity-75 mb-2">
             Phase
           </p>
@@ -69,7 +69,7 @@ export default function MetricsPanel({
         </div>
 
         {/* Steps */}
-        <div className="bg-purple-500/20 text-purple-300 border border-purple-500/50 rounded-lg p-4 text-center">
+        <div className="bg-purple-50 text-purple-700 border-2 border-purple-300 rounded-xl p-4 text-center shadow-sm">
           <p className="text-xs md:text-sm font-semibold uppercase opacity-75 mb-2">
             Steps
           </p>
@@ -79,7 +79,7 @@ export default function MetricsPanel({
         </div>
 
         {/* Distance */}
-        <div className="bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 rounded-lg p-4 text-center">
+        <div className="bg-cyan-50 text-cyan-700 border-2 border-cyan-300 rounded-xl p-4 text-center shadow-sm">
           <p className="text-xs md:text-sm font-semibold uppercase opacity-75 mb-2">
             Distance
           </p>
@@ -87,7 +87,7 @@ export default function MetricsPanel({
         </div>
 
         {/* Treasures */}
-        <div className="bg-yellow-500/20 text-yellow-300 border border-yellow-500/50 rounded-lg p-4 text-center">
+        <div className="bg-yellow-50 text-yellow-700 border-2 border-yellow-300 rounded-xl p-4 text-center shadow-sm">
           <p className="text-xs md:text-sm font-semibold uppercase opacity-75 mb-2">
             Treasures
           </p>
@@ -97,7 +97,7 @@ export default function MetricsPanel({
         </div>
 
         {/* Time */}
-        <div className="bg-green-500/20 text-green-300 border border-green-500/50 rounded-lg p-4 text-center">
+        <div className="bg-green-50 text-green-700 border-2 border-green-300 rounded-xl p-4 text-center shadow-sm">
           <p className="text-xs md:text-sm font-semibold uppercase opacity-75 mb-2">
             Time
           </p>
@@ -107,9 +107,9 @@ export default function MetricsPanel({
 
       {/* Progress Bar */}
       <div className="px-6 pb-6">
-        <div className="bg-slate-800 rounded-full h-2 overflow-hidden">
+        <div className="bg-purple-100 rounded-full h-3 overflow-hidden shadow-inner">
           <div
-            className="bg-gradient-to-r from-cyan-400 to-green-400 h-full transition-all duration-300"
+            className="bg-gradient-to-r from-purple-500 to-pink-500 h-full transition-all duration-300 shadow-sm"
             style={{
               width: `${totalSteps > 0 ? (currentStep / totalSteps) * 100 : 0}%`,
             }}
