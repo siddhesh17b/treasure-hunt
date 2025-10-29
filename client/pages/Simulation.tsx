@@ -5,7 +5,7 @@ import { TreasureHuntSolver } from "@shared/algorithms";
 import SimulationCanvas from "../components/SimulationCanvas";
 import SimulationControls from "../components/SimulationControls";
 import MetricsPanel from "../components/MetricsPanel";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -168,6 +168,15 @@ export default function Simulation() {
           </Button>
           <h1 className="text-3xl font-bold text-white">Algorithm Visualization</h1>
         </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => navigate("/about")}
+          className="border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/20"
+        >
+          <BookOpen size={18} className="mr-2" />
+          Learn More
+        </Button>
       </div>
 
       <div className="max-w-6xl mx-auto">

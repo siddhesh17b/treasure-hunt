@@ -1,12 +1,9 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { HelpCircle, Play } from "lucide-react";
-import HowItWorksModal from "../components/HowItWorksModal";
+import { BookOpen, Play } from "lucide-react";
 
 export default function Home() {
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 flex flex-col items-center justify-center px-4">
@@ -69,11 +66,11 @@ export default function Home() {
           <Button
             size="lg"
             variant="outline"
-            className="border-blue-400 text-blue-300 hover:bg-blue-500/20 text-lg px-8 py-6 rounded-lg font-semibold flex items-center gap-2"
-            onClick={() => setShowModal(true)}
+            className="border-cyan-400 text-cyan-300 hover:bg-cyan-500/20 text-lg px-8 py-6 rounded-lg font-semibold flex items-center gap-2"
+            onClick={() => navigate("/about")}
           >
-            <HelpCircle size={24} />
-            How It Works
+            <BookOpen size={24} />
+            Learn More
           </Button>
         </div>
 
@@ -90,9 +87,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      {/* Modal */}
-      <HowItWorksModal open={showModal} onOpenChange={setShowModal} />
     </div>
   );
 }

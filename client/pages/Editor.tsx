@@ -15,6 +15,7 @@ export default function Editor() {
   const [selectedTool, setSelectedTool] = useState<CellType>(CellType.START);
   const [grid, setGrid] = useState<Grid>(() => new Grid(GRID_SIZE, GRID_SIZE));
   const [gridKey, setGridKey] = useState(0);
+  const [showWelcome, setShowWelcome] = useState(true);
 
   const handleCellClick = useCallback(
     (row: number, col: number) => {
@@ -96,6 +97,35 @@ export default function Editor() {
       </div>
 
       <div className="max-w-6xl mx-auto">
+        {/* Welcome Banner - Only show once */}
+        {showWelcome && (
+          <div className="bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10 border border-cyan-500/30 rounded-lg p-6 mb-8 backdrop-blur-sm">
+            <div className="flex items-start gap-4">
+              <div className="text-4xl">👋</div>
+              <div className="flex-1">
+                <h2 className="text-xl font-bold text-white mb-2">Welcome to the Map Editor!</h2>
+                <p className="text-gray-300 text-sm mb-4 leading-relaxed">
+                  Click on grid cells to place objects. You need at least:
+                  <span className="block mt-2 ml-4">
+                    🚩 <strong className="text-green-400">One Start Point</strong> - Where the explorer begins<br/>
+                    💎 <strong className="text-yellow-400">One or More Treasures</strong> - Items to collect (max 8)<br/>
+                    🎯 <strong className="text-red-400">One Goal Point</strong> - Final destination
+                  </span>
+                </p>
+                <p className="text-gray-400 text-sm italic">
+                  Tip: Try "Random Map" button for a quick start, then customize it!
+                </p>
+              </div>
+              <button
+                onClick={() => setShowWelcome(false)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Grid Canvas */}
           <div className="lg:col-span-2">

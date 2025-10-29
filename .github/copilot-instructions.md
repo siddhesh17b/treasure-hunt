@@ -16,12 +16,25 @@ An interactive educational tool visualizing pathfinding algorithms (A* + Backtra
 **Path Aliases**: `@/` → client/, `@shared/` → shared/
 
 ### Application Flow (Multi-Screen SPA)
-1. **Home** (`/`) → Entry point with app introduction
-2. **Editor** (`/editor`) → Grid map design interface with tool palette
-3. **Simulation** (`/simulation`) → Real-time algorithm visualization
-4. **Results** (`/results`) → Analysis of optimal route found
+1. **Home** (`/`) → Entry point with app introduction + link to About page
+2. **About** (`/about`) → Comprehensive beginner-friendly explanation of the project, algorithms, and how everything works
+3. **Editor** (`/editor`) → Grid map design interface with tool palette + dismissible welcome banner
+4. **Simulation** (`/simulation`) → Real-time algorithm visualization with "Learn More" link to About page
+5. **Results** (`/results`) → Analysis of optimal route found
 
 Navigation uses `react-router-dom` with state passing via `location.state` for grid data transfer between screens.
+
+### Educational Features for Beginners
+- **About Page**: Dedicated `/about` route with comprehensive explanations from basics to technical details
+  - "What Is This?" - High-level overview with real-world examples
+  - "How Does It Work?" - Step-by-step breakdown of all 4 phases
+  - "Why Is This Important?" - Learning benefits and real-world applications
+  - "Technical Details" - Algorithm complexity and implementation notes
+  - "Quick Start Guide" - 5-step getting started tutorial
+- **Welcome Banner**: Appears on Editor page with quick-start instructions (dismissible with ✕ button)
+- **Learn More Buttons**: Available on Home and Simulation pages linking to About page
+- **Phase Indicators**: Visual progress through algorithm phases with emoji icons (🔍⚙️▶️✨)
+- **Metrics Panel**: Real-time stats showing current phase, steps, distance, treasures collected
 
 ## Core Domain Models (shared/types.ts)
 
