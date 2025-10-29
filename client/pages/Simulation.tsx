@@ -51,6 +51,10 @@ export default function Simulation() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [exploredNodes, setExploredNodes] = useState<Position[]>([]); // For visualization
+  const [currentSearchPair, setCurrentSearchPair] = useState<{ from: Position | null; to: Position | null }>({
+    from: null,
+    to: null,
+  });
 
   useEffect(() => {
     const runSimulation = async () => {
@@ -73,9 +77,14 @@ export default function Simulation() {
           (phase: string) => {
             console.log("Phase update:", phase);
             setPhaseMessage(phase);
+            if (phase.includes("Optimizing")) {
+              // Clear exploration visualization when moving to optimization phase
+              setExploredNodes([]);
+              setCurrentSearchPair({ from: null, to: null });
+            }
           },
           (pos: Position) => {
-            // On explore - visualize exploration
+            // On explore - visualize exploration in real-time
             setExploredNodes(prev => [...prev, pos]);
           },
           (order: Position[], distance: number, isBest: boolean) => {
@@ -255,23 +264,30 @@ export default function Simulation() {
 
         {/* Main Visualization Area */}
         <div className="mt-8 bg-slate-900/50 border border-cyan-500/20 rounded-lg p-8 backdrop-blur-sm">
-          {isLoading ? (
-            <div className="aspect-square flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-16 h-16 border-4 border-cyan-500 border-t-yellow-400 rounded-full animate-spin mx-auto mb-4" />
+          <SimulationCanvas
+            grid={grid}
+            explorerPosition={explorerPos}
+            completePath={result?.completePath || []}
+            treasures={result?.treasures || []}
+            treasuresCollected={treasuresCollected}
+            phase={phase}
+            exploredNodes={exploredNodes}
+            isLoading={isLoading}
+          />
+          
+          {/* Overlay message during preprocessing */}
+          {isLoading && (
+            <div className="mt-6 text-center">
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <div className="w-3 h-3 bg-cyan-500 rounded-full animate-pulse" />
                 <p className="text-gray-300 text-lg">{phaseMessage}</p>
               </div>
+              {phase === Phase.PREPROCESSING && exploredNodes.length > 0 && (
+                <p className="text-cyan-400 text-sm">
+                  Nodes explored: {exploredNodes.length}
+                </p>
+              )}
             </div>
-          ) : (
-            <SimulationCanvas
-              grid={grid}
-              explorerPosition={explorerPos}
-              completePath={result?.completePath || []}
-              treasures={result?.treasures || []}
-              treasuresCollected={treasuresCollected}
-              phase={phase}
-              exploredNodes={exploredNodes}
-            />
           )}
         </div>
 

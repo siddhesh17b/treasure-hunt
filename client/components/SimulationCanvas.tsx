@@ -9,6 +9,7 @@ interface SimulationCanvasProps {
   treasuresCollected: number;
   phase: Phase;
   exploredNodes: Position[];
+  isLoading: boolean;
 }
 
 export default function SimulationCanvas({
@@ -19,6 +20,7 @@ export default function SimulationCanvas({
   treasuresCollected,
   phase,
   exploredNodes,
+  isLoading,
 }: SimulationCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [cellSize, setCellSize] = useState(40);
@@ -101,12 +103,20 @@ export default function SimulationCanvas({
         ctx.lineWidth = 1;
         ctx.strokeRect(x, y, cellSize, cellSize);
 
-        // Show explored nodes during preprocessing phase
+        // Show explored nodes during preprocessing phase (even when loading)
         if (phase === Phase.PREPROCESSING && exploredNodes.length > 0) {
-          const isExplored = exploredNodes.find(n => n.equals(pos));
-          if (isExplored && cell.type === CellType.EMPTY) {
-            ctx.fillStyle = "rgba(59, 130, 246, 0.3)"; // Blue tint
+          const exploredIndex = exploredNodes.findIndex(n => n.equals(pos));
+          if (exploredIndex !== -1 && cell.type === CellType.EMPTY) {
+            // Animate exploration with fade-in effect
+            const opacity = Math.min(0.5, 0.1 + (exploredIndex / exploredNodes.length) * 0.4);
+            ctx.fillStyle = `rgba(59, 130, 246, ${opacity})`; // Blue tint with varying opacity
             ctx.fillRect(x, y, cellSize, cellSize);
+            
+            // Add a pulse effect to the most recent explorations
+            if (exploredIndex >= exploredNodes.length - 20) {
+              ctx.fillStyle = `rgba(34, 211, 238, ${0.6 - (exploredNodes.length - exploredIndex) * 0.03})`;
+              ctx.fillRect(x, y, cellSize, cellSize);
+            }
           }
         }
 
@@ -192,7 +202,7 @@ export default function SimulationCanvas({
       ctx.lineWidth = 2;
       ctx.stroke();
     }
-  }, [grid, explorerPosition, completePath, cellSize, phase, treasuresCollected, exploredNodes]);
+  }, [grid, explorerPosition, completePath, cellSize, phase, treasuresCollected, exploredNodes, isLoading]);
 
   return (
     <div ref={containerRef} className="w-full flex justify-center min-h-[400px]">

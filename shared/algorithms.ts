@@ -23,12 +23,12 @@ class PriorityQueue {
 }
 
 export class AStar {
-  static search(
+  static async search(
     grid: Grid,
     start: Position,
     goal: Position,
     onExplore?: (pos: Position) => void
-  ): PathResult {
+  ): Promise<PathResult> {
     const openSet = new PriorityQueue();
     const closedSet = new Set<string>();
     const cameFrom = new Map<string, Position>();
@@ -60,6 +60,8 @@ export class AStar {
 
       if (onExplore && !current.equals(start) && !current.equals(goal)) {
         onExplore(current);
+        // Add delay for visualization (faster than path execution)
+        await new Promise((resolve) => setTimeout(resolve, 10));
       }
 
       if (current.equals(goal)) {
@@ -215,7 +217,7 @@ export class TreasureHuntSolver {
           continue;
         }
 
-        const result = AStar.search(grid, allPoints[i], allPoints[j], onExplore);
+        const result = await AStar.search(grid, allPoints[i], allPoints[j], onExplore);
 
         if (result.distance === Infinity) {
           distances.get(allPoints[i].hash())!.set(allPoints[j].hash(), Infinity);
