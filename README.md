@@ -2,12 +2,15 @@
 
 An interactive educational tool that visualizes pathfinding algorithms (Greedy Best-First Search + Backtracking) to solve a Traveling Salesman Problem variant: finding the optimal route from a start point through multiple treasures to a goal on a grid-based map.
 
+**Core algorithms implemented in C** for optimal performance and educational clarity.
+
 ## ✨ Features
 
 - 🎨 **Interactive Map Editor**: Design custom grid maps with walls, treasures, start and goal points
 - 🔍 **Real-time Visualization**: Watch algorithms explore the map step-by-step
 - 📊 **Live Metrics**: Track distance, treasures collected, nodes explored, and permutations tested
 - 🎯 **Optimal Path Finding**: Uses Greedy Best-First Search + Backtracking optimization
+- 💻 **C Algorithm Implementation**: Core pathfinding logic written in C for performance
 - 📱 **Fully Responsive**: Works on desktop, tablet, and mobile devices
 - 🎓 **Educational**: Perfect for learning pathfinding and optimization algorithms
 
@@ -22,11 +25,12 @@ Works on:
 
 ## 🛠️ Tech Stack
 
+- **Algorithms**: C (Greedy BFS, Backtracking) - Located in `/algorithms` folder
 - **Frontend**: React 18 + TypeScript + Vite
 - **Styling**: TailwindCSS 3 + Radix UI
 - **Routing**: React Router 6
-- **Algorithms**: Greedy Best-First Search (A*), Backtracking
 - **Canvas**: HTML5 Canvas for grid visualization
+- **Integration**: TypeScript wrapper for C algorithms
 
 ## 📋 Prerequisites
 
@@ -125,19 +129,44 @@ vercel
 
 ## 🧠 Algorithms Used
 
-### 1. Greedy Best-First Search (Preprocessing Phase)
-- Finds shortest paths between all key points (start, treasures, goal)
-- Uses Manhattan distance heuristic
-- Visualized with blue-tinted cells showing exploration
+### Core C Implementations (`/algorithms` folder)
 
-### 2. Backtracking (Optimization Phase)
-- Explores all permutations of treasure collection orders
-- Finds the optimal sequence that minimizes total distance
-- Tracks and displays the number of routes tested
+#### 1. **Greedy Best-First Search** (`greedy_bfs.c`)
+- Finds shortest path from start to goal using heuristic-based search
+- Uses Manhattan distance as heuristic function
+- Implements custom Priority Queue for efficient node selection
+- **Time Complexity**: O(V + E) where V = vertices, E = edges
+- **Space Complexity**: O(V)
 
-### 3. Path Execution
-- Constructs complete path from ordered route segments
-- Animates explorer movement with purple→pink gradient path
+**Key Features**:
+- Priority queue implementation with sorted insertion
+- Visited cells tracking to avoid cycles
+- Parent pointer storage for path reconstruction
+- Manhattan distance heuristic for optimal pathfinding
+
+#### 2. **Backtracking TSP Solver** (`backtracking.c`)
+- Solves Traveling Salesman Problem variant
+- Explores all permutations of treasure visiting orders
+- Finds globally optimal route with minimum total distance
+- **Time Complexity**: O(n!) where n = number of treasures
+- **Space Complexity**: O(n) for recursion stack
+
+**Key Features**:
+- Recursive permutation generation
+- Pruning techniques for optimization
+- Real-time best route tracking
+- Comprehensive route testing and comparison
+
+### Web Interface Integration
+- TypeScript wrapper interfaces with C algorithm logic
+- Visual representation of algorithm execution
+- Real-time metrics and step-by-step visualization
+- Interactive map editor for custom test cases
+
+### Algorithm Workflow
+1. **Preprocessing**: Greedy BFS finds shortest paths between all key points
+2. **Optimization**: Backtracking determines optimal treasure collection order  
+3. **Execution**: Constructs and visualizes complete optimal path
 
 ## 🎨 Color Scheme
 
@@ -152,16 +181,38 @@ vercel
 
 ```
 treasure-hunt/
-├── client/              # React frontend
-│   ├── pages/          # Route components
-│   ├── components/     # Reusable components
-│   └── utils/          # Utility functions
-├── server/             # Express backend (minimal)
-├── shared/             # Shared types & algorithms
-│   ├── types.ts       # Position, Grid, Cell types
-│   └── algorithms.ts  # TreasureHuntSolver
-└── netlify/           # Netlify deployment config
+├── algorithms/         # C Algorithm Implementations ⭐
+│   ├── greedy_bfs.c   # Greedy Best-First Search algorithm
+│   └── backtracking.c # Backtracking TSP solver
+├── client/            # React frontend
+│   ├── pages/        # Route components
+│   ├── components/   # Reusable UI components
+│   └── utils/        # Utility functions
+├── server/           # Express backend
+├── shared/           # Shared types & algorithm wrappers
+│   ├── types.ts     # Position, Grid, Cell types
+│   └── algorithms.ts # TypeScript interface to C algorithms
+└── netlify/         # Deployment configuration
 ```
+
+## 🔧 Running C Algorithms Standalone
+
+The core algorithms can be compiled and run independently for testing:
+
+```bash
+# Navigate to algorithms folder
+cd algorithms
+
+# Compile Greedy BFS
+gcc greedy_bfs.c -o greedy_bfs
+./greedy_bfs
+
+# Compile Backtracking
+gcc backtracking.c -o backtracking  
+./backtracking
+```
+
+Both programs include demo test cases and visualization output.
 
 ## 🤝 Contributing
 
