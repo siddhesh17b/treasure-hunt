@@ -141,8 +141,8 @@ vercel
 - Finds shortest path from start to goal using heuristic-based search
 - Uses Manhattan distance as heuristic function
 - Implements custom Priority Queue for efficient node selection
-- **Time Complexity**: O(V + E) where V = vertices, E = edges
-- **Space Complexity**: O(V)
+- **Time Complexity**: O(b^m) where b = branching factor, m = maximum depth
+- **Space Complexity**: O(b^m)
 
 **Key Features**:
 
