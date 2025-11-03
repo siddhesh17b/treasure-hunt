@@ -6,11 +6,27 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-.exe
+
+# Dependencies
 node_modules
+
+# Build outputs
 dist
 dist-ssr
 *.local
+
+# C compiled files
+*.exe
+*.out
+*.o
+*.obj
+*.a
+*.so
+*.dll
+algorithms/*.exe
+algorithms/*.out
+algorithms/greedy_bfs
+algorithms/backtracking
 
 # Editor directories and files
 .vscode/*
@@ -23,5 +39,6 @@ dist-ssr
 *.sln
 *.sw?
 
+# Config
 .config/
 !.env
