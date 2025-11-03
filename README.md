@@ -19,6 +19,7 @@ An interactive educational tool that visualizes pathfinding algorithms (Greedy B
 **Access the app**: [https://treasure-hunt-daa-solver.netlify.app](https://treasure-hunt-daa-solver.netlify.app)
 
 Works on:
+
 - 💻 Desktop (Windows, Mac, Linux)
 - 📱 Mobile (Android, iOS)
 - 🖥️ Any device with a modern web browser
@@ -50,16 +51,19 @@ cd treasure-hunt
 ```
 
 ### 2. Install dependencies
+
 ```bash
 pnpm install
 ```
 
 ### 3. Start development server
+
 ```bash
 pnpm dev
 ```
 
 ### 4. Open in browser
+
 - **On PC**: Navigate to `http://localhost:8080`
 - **On Mobile** (same WiFi network):
   1. Find your PC's IP address:
@@ -83,6 +87,7 @@ pnpm test       # Run tests
 ### Deploy to Netlify (Recommended - FREE)
 
 1. **Push to GitHub**:
+
    ```bash
    git add .
    git commit -m "Ready for deployment"
@@ -114,7 +119,7 @@ vercel
 ## 🎮 How to Use
 
 1. **Home Page**: Learn about the project and algorithms
-2. **Editor Page**: 
+2. **Editor Page**:
    - Use the tool palette to place Start (🚩), Goal (🎯), Treasures (💎), and Walls (🧱)
    - Click "Random Map" for a quick start
    - Click "Run Simulation" when ready
@@ -132,6 +137,7 @@ vercel
 ### Core C Implementations (`/algorithms` folder)
 
 #### 1. **Greedy Best-First Search** (`greedy_bfs.c`)
+
 - Finds shortest path from start to goal using heuristic-based search
 - Uses Manhattan distance as heuristic function
 - Implements custom Priority Queue for efficient node selection
@@ -139,12 +145,14 @@ vercel
 - **Space Complexity**: O(V)
 
 **Key Features**:
+
 - Priority queue implementation with sorted insertion
 - Visited cells tracking to avoid cycles
 - Parent pointer storage for path reconstruction
 - Manhattan distance heuristic for optimal pathfinding
 
 #### 2. **Backtracking TSP Solver** (`backtracking.c`)
+
 - Solves Traveling Salesman Problem variant
 - Explores all permutations of treasure visiting orders
 - Finds globally optimal route with minimum total distance
@@ -152,18 +160,21 @@ vercel
 - **Space Complexity**: O(n) for recursion stack
 
 **Key Features**:
+
 - Recursive permutation generation
 - Pruning techniques for optimization
 - Real-time best route tracking
 - Comprehensive route testing and comparison
 
 ### Web Interface Integration
+
 - TypeScript wrapper interfaces with C algorithm logic
 - Visual representation of algorithm execution
 - Real-time metrics and step-by-step visualization
 - Interactive map editor for custom test cases
 
 ### Algorithm Workflow
+
 1. **Preprocessing**: Greedy BFS finds shortest paths between all key points
 2. **Optimization**: Backtracking determines optimal treasure collection order  
 3. **Execution**: Constructs and visualizes complete optimal path
@@ -217,6 +228,7 @@ Both programs include demo test cases and visualization output.
 ## 🤝 Contributing
 
 This is an educational project for DAA (Design & Analysis of Algorithms) lab. Feel free to:
+
 - Report bugs
 - Suggest improvements
 - Fork and experiment
@@ -228,6 +240,7 @@ MIT License - See [LICENSE](LICENSE) file for details
 ## 👨‍💻 Author
 
 **Siddhesh Bisen**
+
 - GitHub: [@siddhesh17b](https://github.com/siddhesh17b)
 - Project Repository: [treasure-hunt](https://github.com/siddhesh17b/treasure-hunt)
 
