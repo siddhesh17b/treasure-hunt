@@ -1,209 +1,144 @@
-// Backtracking Algorithm for Traveling Salesman Problem
-// Finds optimal order to visit all treasures with minimum distance
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <limits.h>
-#include <string.h>
+#include <math.h>
 
-// Location on map
-typedef struct {
-    int x;
-    int y;
-    char name[20];
-} Location;
+#define N 4  // Number of treasures (you can change this!)
 
-// Route information
-typedef struct {
-    int* order;
-    int total_distance;
-    int num_treasures;
-} Route;
+/*
+    Imagine a robot starting at (0,0),
+    it has to collect all treasures (T1...T4)
+    and finally go to the goal (10,10).
+    The aim is to find the shortest path (least total distance).
+*/
 
-// Calculate Manhattan Distance
-int calculate_distance(Location a, Location b) {
-    return abs(a.x - b.x) + abs(a.y - b.y);
+// Coordinates of each treasure
+int tx[N] = {2, 7, 5, 9};
+int ty[N] = {3, 2, 8, 5};
+
+// Start and goal coordinates
+int startX = 0, startY = 0;
+int goalX = 10, goalY = 10;
+
+// Global variables to store the best result
+int best_distance = INT_MAX;   // start with a very large number
+int best_order[N];             // store best treasure visiting order
+int tested = 0;                // how many total routes we tested
+
+// Function to calculate simple "Manhattan distance" (grid-based)
+int distance(int x1, int y1, int x2, int y2)
+{
+    return abs(x1 - x2) + abs(y1 - y2);
 }
 
-// Print route
-void print_route(Location start, Location* treasures, Location goal, 
-                 int* order, int num_treasures, int distance) {
-    printf("%s", start.name);
-    for (int i = 0; i < num_treasures; i++) {
-        printf(" -> %s", treasures[order[i]].name);
+/*
+    total_distance():
+    This function adds up all the distances
+    — from Start → each Treasure (in given order) → Goal.
+*/
+int total_distance(int order[])
+{
+    int total = 0;
+    int x = startX, y = startY;
+
+    // Visit each treasure in the given order
+    for (int i = 0; i < N; i++)
+    {
+        total += distance(x, y, tx[order[i]], ty[order[i]]);
+        x = tx[order[i]];
+        y = ty[order[i]];
     }
-    printf(" -> %s (dist=%d)\n", goal.name, distance);
+
+    // Finally, go from last treasure to the Goal
+    total += distance(x, y, goalX, goalY);
+    return total;
 }
 
-void copy_array(int* dest, int* src, int size) {
-    for (int i = 0; i < size; i++) {
-        dest[i] = src[i];
-    }
-}
+/*
+    backtrack():
+    This is the main recursive function.
+    It tries all possible ways (permutations) to visit treasures.
 
-int permutations_tested = 0;
+    For example:
+    T1 → T2 → T3 → T4
+    T2 → T1 → T3 → T4
+    ... and so on.
 
-// Recursive backtracking function
-void backtrack(Location start, Location* treasures, Location goal,
-               int num_treasures, bool* visited, int* current_order,
-               int depth, Location current_location, int current_distance,
-               Route* best_route) {
-    
-    // All treasures visited
-    if (depth == num_treasures) {
-        int final_distance = current_distance + 
-                           calculate_distance(current_location, goal);
-        
-        permutations_tested++;
-        
-        printf("#%d: ", permutations_tested);
-        print_route(start, treasures, goal, current_order, num_treasures, final_distance);
-        
-        // Check if this is better
-        if (final_distance < best_route->total_distance) {
-            printf("  ^ New best!\n");
-            best_route->total_distance = final_distance;
-            copy_array(best_route->order, current_order, num_treasures);
+    For each order, it calculates the total distance and remembers the best.
+*/
+void backtrack(bool visited[], int order[], int depth)
+{
+    // Base case: if all treasures are visited
+    if (depth == N)
+    {
+        tested++;  // count how many complete routes we tried
+
+        int d = total_distance(order);  // calculate total distance for this order
+
+        // Show what route we are testing
+        printf("Route #%d: Start", tested);
+        for (int i = 0; i < N; i++)
+            printf(" -> T%d", order[i] + 1);
+        printf(" -> Goal (Distance = %d)\n", d);
+
+        // If it's the best route so far, save it
+        if (d < best_distance)
+        {
+            best_distance = d;
+            for (int i = 0; i < N; i++)
+                best_order[i] = order[i];
+            printf("  🌟 New best route found!\n");
         }
-        
         return;
     }
-    
-    // Try each unvisited treasure
-    for (int i = 0; i < num_treasures; i++) {
-        if (visited[i]) {
-            continue;
+
+    // Try visiting every unvisited treasure next
+    for (int i = 0; i < N; i++)
+    {
+        if (!visited[i])
+        {
+            // Mark this treasure as visited
+            visited[i] = true;
+            order[depth] = i;
+
+            // Go deeper into the recursion (try next treasure)
+            backtrack(visited, order, depth + 1);
+
+            // Backtrack step — unmark this treasure
+            // (so it can be used in other combinations)
+            visited[i] = false;
         }
-        
-        int distance_to_treasure = calculate_distance(current_location, treasures[i]);
-        
-        // Choose this treasure
-        visited[i] = true;
-        current_order[depth] = i;
-        
-        // Recurse
-        backtrack(start, treasures, goal, num_treasures, visited, 
-                 current_order, depth + 1, treasures[i], 
-                 current_distance + distance_to_treasure, best_route);
-        
-        // Backtrack
-        visited[i] = false;
     }
 }
 
-// Solve TSP using backtracking
-Route solve_tsp_backtracking(Location start, Location* treasures, 
-                             int num_treasures, Location goal) {
-    
-    printf("\nBacktracking TSP Solver\n");
-    printf("=======================\n");
-    printf("Start: %s (%d,%d)\n", start.name, start.x, start.y);
-    printf("Goal: %s (%d,%d)\n", goal.name, goal.x, goal.y);
-    printf("Treasures: %d\n", num_treasures);
-    for (int i = 0; i < num_treasures; i++) {
-        printf("  %s (%d,%d)\n", treasures[i].name, treasures[i].x, treasures[i].y);
-    }
-    
-    // Calculate factorial
-    int factorial = 1;
-    for (int i = 2; i <= num_treasures; i++) {
-        factorial *= i;
-    }
-    printf("\nTesting %d! = %d permutations\n\n", num_treasures, factorial);
-    
-    Route best_route;
-    best_route.order = (int*)malloc(num_treasures * sizeof(int));
-    best_route.total_distance = INT_MAX;
-    best_route.num_treasures = num_treasures;
-    
-    bool* visited = (bool*)calloc(num_treasures, sizeof(bool));
-    int* current_order = (int*)malloc(num_treasures * sizeof(int));
-    
-    permutations_tested = 0;
-    
-    // Start backtracking
-    backtrack(start, treasures, goal, num_treasures, visited, 
-             current_order, 0, start, 0, &best_route);
-    
-    free(visited);
-    free(current_order);
-    
-    printf("\nDone! Tested %d routes\n", permutations_tested);
-    printf("Best distance: %d\n\n", best_route.total_distance);
-    
-    return best_route;
-}
+int main()
+{
+    printf("=== Traveling Salesman Problem (Backtracking) ===\n");
+    printf("Start: (0,0), Goal: (10,10)\n\n");
 
-int main() {
-    printf("Backtracking TSP Demo\n");
-    printf("=====================\n");
-    
-    Location start = {0, 0, "Start"};
-    Location goal = {10, 10, "Goal"};
-    
-    // Test with 4 treasures
-    int num_treasures = 4;
-    Location treasures[4] = {
-        {2, 3, "T1"},
-        {7, 2, "T2"},
-        {5, 8, "T3"},
-        {9, 5, "T4"}
-    };
-    
-    printf("\nMap:\n");
-    for (int y = 0; y <= 10; y++) {
-        for (int x = 0; x <= 10; x++) {
-            if (x == start.x && y == start.y) {
-                printf("S ");
-            } else if (x == goal.x && y == goal.y) {
-                printf("G ");
-            } else {
-                bool found = false;
-                for (int t = 0; t < num_treasures; t++) {
-                    if (x == treasures[t].x && y == treasures[t].y) {
-                        printf("%d ", t + 1);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) printf(". ");
-            }
-        }
-        printf("\n");
-    }
-    
-    // Solve
-    Route optimal = solve_tsp_backtracking(start, treasures, num_treasures, goal);
-    
-    printf("\n=== OPTIMAL SOLUTION ===\n");
-    printf("Best route: ");
-    print_route(start, treasures, goal, optimal.order, num_treasures, optimal.total_distance);
-    
-    printf("\nPath breakdown:\n");
-    Location current = start;
-    int total = 0;
-    
-    printf("1. Start at %s (%d,%d)\n", start.name, start.x, start.y);
-    
-    for (int i = 0; i < num_treasures; i++) {
-        Location next = treasures[optimal.order[i]];
-        int dist = calculate_distance(current, next);
-        total += dist;
-        printf("%d. %s (%d,%d) - dist=%d, total=%d\n", 
-               i + 2, next.name, next.x, next.y, dist, total);
-        current = next;
-    }
-    
-    int final_dist = calculate_distance(current, goal);
-    total += final_dist;
-    printf("%d. %s (%d,%d) - dist=%d, total=%d\n", 
-           num_treasures + 2, goal.name, goal.x, goal.y, final_dist, total);
-    
-    printf("\nFinal distance: %d\n", optimal.total_distance);
-    printf("Routes tested: %d\n", permutations_tested);
-    
-    free(optimal.order);
-    
+    // Print treasure info
+    printf("Treasures:\n");
+    for (int i = 0; i < N; i++)
+        printf("T%d -> (%d,%d)\n", i + 1, tx[i], ty[i]);
+    printf("\n");
+
+    // Prepare arrays for recursion
+    bool visited[N] = {false};
+    int order[N];
+
+    // Start exploring all possible paths
+    backtrack(visited, order, 0);
+
+    // After trying all routes
+    printf("\n=== ✅ BEST ROUTE FOUND ===\n");
+    printf("Start");
+    for (int i = 0; i < N; i++)
+        printf(" -> T%d", best_order[i] + 1);
+    printf(" -> Goal\n");
+
+    printf("Total Distance = %d\n", best_distance);
+    printf("Routes Tested = %d\n", tested);
+
     return 0;
 }
